@@ -1,0 +1,72 @@
+<section class="builder" aria-labelledby="page-title">
+  <!-- A. Header -->
+  <header class="page-header">
+    <h1 id="page-title">Create Your Friend</h1>
+  </header>
+
+  <!-- B. Panou Sus — Choose Body Part -->
+  <section class="panel panel-top" aria-labelledby="bp-section-title">
+    <div class="section-header">
+      <h2 id="bp-section-title" data-testid="bp-title">Choose Body Part</h2>
+    </div>
+    <div class="media-row">
+      <button type="button" class="nav-btn prev" data-testid="bp-prev" aria-label="Previous body part">←</button>
+      <figure class="preview">
+        <img data-testid="bp-image" src="/animalblueprint.png" alt="Body part preview over generic silhouette" />
+        <figcaption class="preview-caption" data-testid="bp-label">Head</figcaption>
+      </figure>
+      <button type="button" class="nav-btn next" data-testid="bp-next" aria-label="Next body part">→</button>
+    </div>
+  </section>
+
+  <!-- C. Panou Jos — Choose Animal -->
+  <section class="panel panel-bottom" aria-labelledby="sp-section-title">
+    <div class="section-header">
+      <h2 id="sp-section-title" data-testid="sp-title">Choose Animal</h2>
+    </div>
+    <div class="carousel-row">
+      <button type="button" class="nav-btn prev" data-testid="sp-prev" aria-label="Previous animals">←</button>
+      <div class="carousel" data-testid="sp-carousel" role="list">
+        <button type="button" class="species-card selected" data-testid="sp-card-lion" aria-pressed="true" role="listitem">
+          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Lion thumbnail" /></div>
+          <span class="label">Lion</span>
+        </button>
+        <button type="button" class="species-card" data-testid="sp-card-giraffe" role="listitem">
+          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Giraffe thumbnail" /></div>
+          <span class="label">Giraffe</span>
+        </button>
+        <button type="button" class="species-card" data-testid="sp-card-elephant" role="listitem">
+          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Elephant thumbnail" /></div>
+          <span class="label">Elephant</span>
+        </button>
+        <button type="button" class="species-card" data-testid="sp-card-fox" role="listitem">
+          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Fox thumbnail" /></div>
+          <span class="label">Fox</span>
+        </button>
+        <button type="button" class="species-card" data-testid="sp-card-rabbit" role="listitem">
+          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Rabbit thumbnail" /></div>
+          <span class="label">Rabbit</span>
+        </button>
+        <button type="button" class="species-card" data-testid="sp-card-monkey" role="listitem">
+          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Monkey thumbnail" /></div>
+          <span class="label">Monkey</span>
+        </button>
+        <button type="button" class="species-card" data-testid="sp-card-crocodile" role="listitem">
+          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Crocodile thumbnail" /></div>
+          <span class="label">Crocodile</span>
+        </button>
+        <button type="button" class="species-card" data-testid="sp-card-penguin" role="listitem">
+          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Penguin thumbnail" /></div>
+          <span class="label">Penguin</span>
+        </button>
+      </div>
+      <button type="button" class="nav-btn next" data-testid="sp-next" aria-label="More animals">→</button>
+    </div>
+    <p class="hint">Tap an animal to apply to the selected body part</p>
+  </section>
+
+  <!-- D. Acțiune jos — Generate -->
+  <div class="action-bar">
+    <button type="button" class="btn-generate" data-testid="btn-generate" aria-label="Generate creature">Generate</button>
+  </div>
+</section>

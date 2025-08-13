@@ -1,0 +1,3 @@
+.home{display:grid;gap:12px;place-items:start}
+.cta{display:inline-block;padding:10px 14px;border-radius:10px;background:#4F46E5;color:#fff;text-decoration:none}
+.cta:hover{background:#4338CA}
