@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.tools/node-v22.12.0-win-x64/node_modules
+/.tools
+/.vs
