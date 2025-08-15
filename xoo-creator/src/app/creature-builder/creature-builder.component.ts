@@ -69,6 +69,11 @@ export class CreatureBuilderComponent {
     return this.animals.filter(a => a.supports.has(part));
   });
 
+  // Parts to include in the Generate summary: exclude locked parts and parts assigned to locked animals
+  protected partsForGenerate = computed(() =>
+    this.parts.filter(p => !this.isPartLocked(p.key) && !this.isAnimalLocked(this.assignments()[p.key] ?? 0))
+  );
+
   constructor(private readonly store: PersistenceService, private readonly router: Router) {
     // Load config or randomize on first visit
     const cfg = this.store.load();
@@ -301,7 +306,21 @@ export class CreatureBuilderComponent {
   confirmGenerate() { this.showConfirm.set(true); }
   cancelGenerate() { this.showConfirm.set(false); }
   proceedGenerate() {
-    // For now, just close the modal; hook real generation later
+    // Build final config including only unlocked parts mapped to unlocked animals
+    const finalAssignments: Partial<Record<PartKey, number>> = {};
+    for (const p of this.partsForGenerate()) {
+      const idx = this.assignments()[p.key] ?? 0;
+      if (!this.isAnimalLocked(idx)) {
+        finalAssignments[p.key] = idx;
+      }
+    }
+    // Persist last generated config separately (does not overwrite working assignments)
+    try {
+      localStorage.setItem('xoo.builder.lastGenerated.v1', JSON.stringify({
+        assignments: finalAssignments,
+        generatedAt: Date.now(),
+      }));
+    } catch { /* ignore */ }
     this.showConfirm.set(false);
   }
 

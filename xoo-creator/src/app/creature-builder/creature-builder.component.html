@@ -71,11 +71,12 @@
     <h3 id="confirm-title">Ai ales această configurație. Generăm?</h3>
     <div class="summary">
       <ul>
-        <li *ngFor="let p of parts">
+        <li *ngFor="let p of partsForGenerate()">
           <strong>{{ p.name }}:</strong>
           {{ animals[assignments()[p.key]].label }}
         </li>
       </ul>
+      <p *ngIf="partsForGenerate().length === 0" style="margin:8px 0 0;color:#444">Nicio parte de corp deblocată selectată încă.</p>
     </div>
     <div class="actions">
       <button type="button" class="btn secondary" (click)="cancelGenerate()">Renunță</button>
