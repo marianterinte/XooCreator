@@ -41,7 +41,7 @@ export class CreatureBuilderComponent {
   ] as const;
 
   // Lock rules: last 2 body parts locked; only first 3 animals unlocked
-  private readonly unlockedAnimalCount = 4;
+  private readonly unlockedAnimalCount = 3;
   private readonly lockedParts = new Set<PartKey>(['legs', 'tail', 'wings', 'horn', 'horns']);
 
   // Index state
