@@ -129,12 +129,17 @@
     </div>
     <ng-template #doneTpl>
       <div class="result-card" [class.flipped]="resultFlipped()" (click)="flipResultCard()">
+        <!-- Front now shows the image first -->
         <div class="card-face front">
-          <div class="flip-hint">← atinge pentru flip</div>
-        </div>
-        <div class="card-face back">
           <img [src]="resultImage()" [alt]="resultName()" />
-          <div class="name">{{ resultName() }}</div>
+          <div class="flip-hint large">← atinge pentru flip</div>
+        </div>
+        <!-- Back reveals name and story -->
+        <div class="card-face back">
+          <div class="details">
+            <h4 class="res-name">{{ resultName() }}</h4>
+            <p class="res-story">{{ resultStory() }}</p>
+          </div>
         </div>
       </div>
     </ng-template>

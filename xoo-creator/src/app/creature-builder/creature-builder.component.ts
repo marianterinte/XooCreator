@@ -85,6 +85,7 @@ export class CreatureBuilderComponent {
   protected genMessage = signal('');
   protected resultImage = signal<string>('');
   protected resultName = signal<string>('Hybrid');
+  protected resultStory = signal<string>('');
   protected resultFlipped = signal(false);
   private genTimer: any = null;
 
@@ -417,12 +418,13 @@ export class CreatureBuilderComponent {
     this.genMessage.set('Pregătim magia...');
     this.resultFlipped.set(false);
     // Simulate progress with playful steps
+    // Total ~5000ms
     const steps = [
-      { d: 400, m: 'Amestecăm ADN-ul...' },
-      { d: 500, m: 'Potrivim părțile...' },
-      { d: 450, m: 'Adăugăm scântei de imaginație ✨' },
-      { d: 550, m: 'Quasi-hiper sinteză...' },
-      { d: 500, m: 'Ultimele retușuri...' },
+      { d: 900,  m: 'Amestecăm ADN-ul...' },
+      { d: 1100, m: 'Potrivim părțile...' },
+      { d: 900,  m: 'Adăugăm scântei de imaginație ✨' },
+      { d: 1100, m: 'Quasi-hiper sinteză...' },
+      { d: 1000, m: 'Ultimele retușuri...' },
     ];
     let i = 0;
     const total = steps.length;
@@ -448,8 +450,9 @@ export class CreatureBuilderComponent {
     this.genInProgress.set(false);
     // For now, use a placeholder hybrid image
     this.resultImage.set('/images/animals/hybrids/hybrid_duckfox.jpg');
-    // Simple derived name from two selected animals could be added; for now keep generic
-    this.resultName.set('Hybrid');
+  // Show image first; name and story appear on flip
+  this.resultName.set('Matzo-Iepurele');
+  this.resultStory.set('Născut dintr-o ploaie magică peste un câmp de lalele, Matzo-Iepurele a învățat să repare jucăriile stricându-le mai întâi „din greșeală”. Copiii vin la el să le repare bicicletele și să asculte povești amestecate cu glume. E cunoscut drept aducătorul de zâmbete.');
   }
 
   protected flipResultCard() {
