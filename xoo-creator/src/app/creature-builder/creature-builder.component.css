@@ -104,6 +104,8 @@
 .btn.unlock{background:#059669;color:#fff;border:none;border-radius:10px;padding:8px 12px}
 .btn.unlock:hover{background:#047857}
 .confirm-modal .warning{margin:8px 0 0 0;color:#b45309;background:#fff7ed;border:1px solid #fed7aa;padding:8px 10px;border-radius:10px}
+.confirm-modal .touch-checkbox{width:28px;height:28px}
+.confirm-modal li.disabled{opacity:.6;cursor:not-allowed}
 
 @keyframes modal-pop-in{
 	from{opacity:0;transform:translateY(8px) scale(.96)}

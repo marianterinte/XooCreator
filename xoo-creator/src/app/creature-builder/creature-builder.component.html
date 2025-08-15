@@ -73,20 +73,22 @@
     <h3 id="confirm-title">Ai ales această configurație. Generăm?</h3>
     <div class="summary">
       <ul>
-        <li *ngFor="let p of parts">
-          <strong>{{ p.name }}:</strong>
-          {{ animals[assignments()[p.key]].label }}
+        <li *ngFor="let p of parts" (click)="!isGenerateDisabled(p) && toggleGeneratePart(p.key)" [class.disabled]="isGenerateDisabled(p)" style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:6px;border-radius:10px">
+          <input type="checkbox" [checked]="generateSelection()[p.key]" [disabled]="isGenerateDisabled(p)" (click)="$event.preventDefault()" class="touch-checkbox" />
+          <strong style="min-width:80px">{{ p.name }}:</strong>
+          <img [src]="animals[assignments()[p.key]].src" [alt]="animals[assignments()[p.key]].label" style="width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #ddd" />
+          <span>{{ animals[assignments()[p.key]].label }}</span>
           <span *ngIf="isPartLocked(p.key) || isAnimalLocked(assignments()[p.key])" style="color:#6b7280">(locked)</span>
         </li>
       </ul>
-      <p *ngIf="partsForGenerate().length === 0" style="margin:8px 0 0;color:#444">Nicio parte de corp deblocată selectată încă.</p>
+      <p *ngIf="selectedCount() < 2" class="warning">Selectează cel puțin 2 părți pentru a genera.</p>
     </div>
     <p style="margin:8px 0 0 0;color:#111">Cost: {{ generateCost }} credit</p>
     <p *ngIf="creditsLeft < generateCost" class="warning">Nu ai suficiente credite. Te rugăm folosește Unlock pentru a alimentezi contul.</p>
     <div class="actions">
       <button type="button" class="btn secondary" (click)="cancelGenerate()">Renunță</button>
       <button type="button" class="btn unlock" (click)="goToUnlock()">Unlock</button>
-      <button *ngIf="creditsLeft >= generateCost" type="button" class="btn primary" (click)="proceedGenerate()">Generează</button>
+      <button *ngIf="creditsLeft >= generateCost && selectedCount() >= 2" type="button" class="btn primary" (click)="proceedGenerate()">Generează</button>
     </div>
   </dialog>
 

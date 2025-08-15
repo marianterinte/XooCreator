@@ -66,6 +66,17 @@ export class CreatureBuilderComponent {
   protected showExitConfirm = signal(false);
   protected showHelp = signal(false);
   protected readonly generateCost = 1; // 1 credit per image
+  // Selection state for Generate modal (per-part)
+  protected generateSelection = signal<Record<PartKey, boolean>>({
+    head: false,
+    body: false,
+    arms: false,
+    legs: false,
+    tail: false,
+    wings: false,
+    horn: false,
+    horns: false,
+  });
 
   // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
@@ -322,16 +333,27 @@ export class CreatureBuilderComponent {
   protected isActiveAnimal(a: AnimalOption) { return this.getGlobalIndex(a) === this.activeAnimalIdx(); }
 
   // Modal actions
-  confirmGenerate() { this.showConfirm.set(true); }
+  confirmGenerate() {
+    // Initialize selection: default select all eligible (unlocked) parts
+    const sel: Record<PartKey, boolean> = this.parts.reduce((acc, p) => {
+      const eligible = !this.isPartLocked(p.key) && !this.isAnimalLocked(this.assignments()[p.key] ?? 0);
+      (acc as any)[p.key] = eligible;
+      return acc;
+    }, {} as Record<PartKey, boolean>);
+    this.generateSelection.set(sel);
+    this.showConfirm.set(true);
+  }
   cancelGenerate() { this.showConfirm.set(false); }
   proceedGenerate() {
     // Build final config including only unlocked parts mapped to unlocked animals
     const finalAssignments: Partial<Record<PartKey, number>> = {};
-    for (const p of this.partsForGenerate()) {
+    const sel = this.generateSelection();
+    for (const p of this.parts) {
+      if (!sel[p.key]) continue; // only selected
+      if (this.isPartLocked(p.key)) continue;
       const idx = this.assignments()[p.key] ?? 0;
-      if (!this.isAnimalLocked(idx)) {
-        finalAssignments[p.key] = idx;
-      }
+      if (this.isAnimalLocked(idx)) continue;
+      finalAssignments[p.key] = idx;
     }
     // Try spend credits
     const ok = this.credits.trySpend(this.generateCost);
@@ -349,6 +371,31 @@ export class CreatureBuilderComponent {
       }));
     } catch { /* ignore */ }
     this.showConfirm.set(false);
+  }
+
+  // Toggle selection for a part inside the confirmation modal, enforcing minimum 2 selected
+  protected toggleGeneratePart(key: PartKey) {
+    const sel = { ...this.generateSelection() };
+    const current = !!sel[key];
+    if (current) {
+      // Count currently selected items
+      const count = Object.values(sel).filter(Boolean).length;
+      if (count <= 2) return; // enforce minimum 2
+      sel[key] = false;
+    } else {
+      sel[key] = true;
+    }
+    this.generateSelection.set(sel);
+  }
+
+  protected selectedCount() {
+    return Object.values(this.generateSelection()).filter(Boolean).length;
+  }
+
+  // Whether a part row should be disabled in the generate modal (locked part or locked animal assignment)
+  protected isGenerateDisabled(p: PartDef): boolean {
+    const idx = this.assignments()[p.key] ?? 0;
+    return this.isPartLocked(p.key) || this.isAnimalLocked(idx);
   }
 
   // Exit/back flow
