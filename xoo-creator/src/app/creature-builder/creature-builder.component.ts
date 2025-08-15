@@ -78,6 +78,16 @@ export class CreatureBuilderComponent {
     horns: false,
   });
 
+  // Generation/result flow state
+  protected showResult = signal(false);
+  protected genInProgress = signal(false);
+  protected genProgress = signal(0);
+  protected genMessage = signal('');
+  protected resultImage = signal<string>('');
+  protected resultName = signal<string>('Hybrid');
+  protected resultFlipped = signal(false);
+  private genTimer: any = null;
+
   // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
   protected currentAnimal = computed(() => this.animals[(this.activeAnimalIdx() + this.animals.length) % this.animals.length]);
@@ -370,7 +380,8 @@ export class CreatureBuilderComponent {
         generatedAt: Date.now(),
       }));
     } catch { /* ignore */ }
-    this.showConfirm.set(false);
+  this.showConfirm.set(false);
+  this.startGenerationFlow();
   }
 
   // Toggle selection for a part inside the confirmation modal, enforcing minimum 2 selected
@@ -396,6 +407,53 @@ export class CreatureBuilderComponent {
   protected isGenerateDisabled(p: PartDef): boolean {
     const idx = this.assignments()[p.key] ?? 0;
     return this.isPartLocked(p.key) || this.isAnimalLocked(idx);
+  }
+
+  private startGenerationFlow() {
+    // Reset state
+    this.showResult.set(true);
+    this.genInProgress.set(true);
+    this.genProgress.set(0);
+    this.genMessage.set('Pregătim magia...');
+    this.resultFlipped.set(false);
+    // Simulate progress with playful steps
+    const steps = [
+      { d: 400, m: 'Amestecăm ADN-ul...' },
+      { d: 500, m: 'Potrivim părțile...' },
+      { d: 450, m: 'Adăugăm scântei de imaginație ✨' },
+      { d: 550, m: 'Quasi-hiper sinteză...' },
+      { d: 500, m: 'Ultimele retușuri...' },
+    ];
+    let i = 0;
+    const total = steps.length;
+    const tick = () => {
+      if (i < total) {
+        const pct = Math.min(100, Math.floor(((i + 1) / total) * 100));
+        this.genProgress.set(pct);
+        this.genMessage.set(steps[i].m);
+        const delay = steps[i].d;
+        i++;
+        this.genTimer = setTimeout(tick, delay);
+      } else {
+        // Done: show result
+        this.finishGeneration();
+      }
+    };
+    tick();
+  }
+
+  private finishGeneration() {
+    if (this.genTimer) { clearTimeout(this.genTimer); this.genTimer = null; }
+    this.genProgress.set(100);
+    this.genInProgress.set(false);
+    // For now, use a placeholder hybrid image
+    this.resultImage.set('/images/animals/hybrids/hybrid_duckfox.jpg');
+    // Simple derived name from two selected animals could be added; for now keep generic
+    this.resultName.set('Hybrid');
+  }
+
+  protected flipResultCard() {
+    this.resultFlipped.set(!this.resultFlipped());
   }
 
   // Exit/back flow

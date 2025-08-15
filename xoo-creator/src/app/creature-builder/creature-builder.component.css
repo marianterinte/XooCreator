@@ -107,6 +107,22 @@
 .confirm-modal .touch-checkbox{width:28px;height:28px}
 .confirm-modal li.disabled{opacity:.6;cursor:not-allowed}
 
+/* Result modal: progress */
+.confirm-modal.result .progress-wrap{display:grid;gap:12px;place-items:center;margin-top:8px}
+.confirm-modal.result .progress-bar{width:100%;height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+.confirm-modal.result .progress-bar .fill{height:100%;background:linear-gradient(90deg,#4F46E5,#06b6d4);width:0;transition:width .35s ease}
+.confirm-modal.result .status{margin:0;color:#374151}
+
+/* Flip card */
+.confirm-modal.result .result-card{position:relative;width:min(420px,80vw);height:min(560px,62vh);margin:12px auto;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.7,.3,1);cursor:pointer}
+.confirm-modal.result .result-card.flipped{transform:rotateY(180deg)}
+.confirm-modal.result .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.2);display:grid;place-items:center}
+.confirm-modal.result .card-face.front{background:linear-gradient(135deg,#fef3c7,#e9d5ff,#bfdbfe,#bbf7d0)}
+.confirm-modal.result .card-face.front .flip-hint{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.6);color:#fff;padding:6px 10px;border-radius:10px}
+.confirm-modal.result .card-face.back{transform:rotateY(180deg);background:#fff}
+.confirm-modal.result .card-face.back img{width:100%;height:100%;object-fit:cover}
+.confirm-modal.result .card-face.back .name{position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.6);color:#fff;padding:6px 10px;border-radius:10px}
+
 @keyframes modal-pop-in{
 	from{opacity:0;transform:translateY(8px) scale(.96)}
 	to{opacity:1;transform:translateY(0) scale(1)}

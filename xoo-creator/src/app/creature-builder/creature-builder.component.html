@@ -117,4 +117,29 @@
       <button type="button" class="btn primary" (click)="closeHelp()">Înțeles</button>
     </div>
   </dialog>
+
+  <!-- Result / Generation Modal -->
+  <dialog class="confirm-modal result" [open]="showResult()" aria-labelledby="result-title" aria-modal="true">
+    <h3 id="result-title">Rezultat</h3>
+    <div class="summary" *ngIf="genInProgress(); else doneTpl">
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="fill" [style.width]="genProgress() + '%'"></div></div>
+        <p class="status">{{ genMessage() }}</p>
+      </div>
+    </div>
+    <ng-template #doneTpl>
+      <div class="result-card" [class.flipped]="resultFlipped()" (click)="flipResultCard()">
+        <div class="card-face front">
+          <div class="flip-hint">← atinge pentru flip</div>
+        </div>
+        <div class="card-face back">
+          <img [src]="resultImage()" [alt]="resultName()" />
+          <div class="name">{{ resultName() }}</div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="actions">
+      <button type="button" class="btn secondary" (click)="showResult.set(false)">Close</button>
+    </div>
+  </dialog>
 </section>
