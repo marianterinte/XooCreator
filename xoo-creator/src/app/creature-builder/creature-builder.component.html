@@ -16,7 +16,7 @@
       </button>
     </div>
 
-    <figure class="preview"
+  <figure class="preview"
       (pointerdown)="onTopPointerDown($event)"
       (pointermove)="onTopPointerMove($event)"
       (pointerup)="onTopPointerUp($event)"
@@ -30,10 +30,6 @@
 
   <!-- C. Panou Jos — Animals: big image + carousel (thumbnails) -->
   <section class="panel panel-bottom" aria-labelledby="sp-section-title">
-    <div class="section-header">
-      <h2 id="sp-section-title" data-testid="sp-title">Choose Animal</h2>
-    </div>
-
     <figure class="preview"
       (pointerdown)="onBottomPointerDown($event)"
       (pointermove)="onBottomPointerMove($event)"
@@ -45,7 +41,7 @@
       <figcaption class="preview-caption" data-testid="animal-label">{{ currentAnimal().label }}</figcaption>
     </figure>
 
-    <div class="carousel thumbs" role="listbox" aria-label="Animals">
+  <div class="carousel thumbs" role="listbox" aria-label="Animals">
       <button
         *ngFor="let a of animals; let i = index"
         class="thumb" [class.active]="i === activeAnimalIdx()"
