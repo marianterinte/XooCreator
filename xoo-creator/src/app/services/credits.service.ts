@@ -42,8 +42,8 @@ export class CreditsService {
       const everRaw = localStorage.getItem(this.everKey);
       const ever = everRaw === '1';
       this._credits.set(Number.isFinite(val) ? val : 0);
-      // If credits exist, consider ever topped up regardless of flag
-      this._ever.set(ever || (this._credits() > 0));
+      // Do NOT infer purchase from credits; keep this separate as requested
+      this._ever.set(ever);
     } catch {
       this._credits.set(0);
       this._ever.set(false);
