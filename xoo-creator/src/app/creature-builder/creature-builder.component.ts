@@ -30,15 +30,15 @@ export class CreatureBuilderComponent {
   protected readonly animals: ReadonlyArray<AnimalOption> = [
     { src: '/images/animals/bunny.jpg', label: 'Bunny' },
     { src: '/images/animals/cat.jpg', label: 'Cat' },
+    { src: '/images/animals/giraffe.jpg', label: 'Giraffe' },
     { src: '/images/animals/dog.jpg', label: 'Dog' },
     { src: '/images/animals/fox.jpg', label: 'Fox' },
-    { src: '/images/animals/giraffe.jpg', label: 'Giraffe' },
     { src: '/images/animals/hippo.jpg', label: 'Hippo' },
     { src: '/images/animals/monkey.jpg', label: 'Monkey' },
   ] as const;
 
   // Lock rules: last 2 body parts locked; only first 3 animals unlocked
-  private readonly unlockedAnimalCount = 3;
+  private readonly unlockedAnimalCount = 4;
   private readonly lockedParts = new Set<PartKey>(['legs', 'tail']);
 
   // Index state
