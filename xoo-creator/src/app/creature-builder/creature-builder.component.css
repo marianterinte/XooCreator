@@ -40,7 +40,9 @@
 .preview-caption{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.5);color:#fff;font-size:.85rem;padding:4px 8px;border-radius:999px}
 
 /* Thumb carousels */
-.carousel.thumbs{display:flex;gap:8px;overflow:auto;padding:8px;height:var(--carouselH)}
+.carousel.thumbs{display:flex;gap:8px;overflow:auto;padding:8px;height:var(--carouselH);justify-content:center;align-items:center}
+.carousel.thumbs::before,
+.carousel.thumbs::after{content:"";flex:1 0 0;pointer-events:none}
 .carousel.thumbs::-webkit-scrollbar{height:6px}
 .thumb{flex:0 0 auto;border:none;background:transparent;padding:0;cursor:pointer;position:relative}
 .thumb img{width:68px;height:68px;object-fit:cover;border-radius:10px;border:1px solid #ddd;background:#fff}
