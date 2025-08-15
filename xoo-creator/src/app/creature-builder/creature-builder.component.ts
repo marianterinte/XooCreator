@@ -46,8 +46,8 @@ export class CreatureBuilderComponent {
   ] as const;
 
   // Lock rules: last 2 body parts locked; only first 3 animals unlocked
-  private readonly unlockedAnimalCount = 3;
-  private readonly lockedParts = new Set<PartKey>(['legs', 'tail', 'wings', 'horn', 'horns']);
+  private readonly baseUnlockedAnimalCount = 3;
+  private readonly baseLockedParts = new Set<PartKey>(['legs', 'tail', 'wings', 'horn', 'horns']);
 
   // Index state
   protected activePartIdx = signal(0);
@@ -98,7 +98,8 @@ export class CreatureBuilderComponent {
       const m: Record<PartKey, number> = this.parts.reduce((acc, p) => { (acc as any)[p.key] = 0; return acc; }, {} as Record<PartKey, number>);
       for (const p of this.parts) {
         const supported = this.animals.filter(a => a.supports.has(p.key));
-        const unlockedSupported = supported.filter(a => this.animals.indexOf(a) < this.unlockedAnimalCount);
+  const unlockedCap = this.credits.hasEverToppedUp() ? this.animals.length : this.baseUnlockedAnimalCount;
+  const unlockedSupported = supported.filter(a => this.animals.indexOf(a) < unlockedCap);
         const pool = unlockedSupported.length ? unlockedSupported : supported;
         const pick = pool.length ? pool[Math.floor(Math.random() * pool.length)] : this.animals[0];
         m[p.key] = this.animals.indexOf(pick);
@@ -128,7 +129,7 @@ export class CreatureBuilderComponent {
   }
 
   private randAnimalIndex(unlockedOnly = false) {
-    const max = unlockedOnly ? this.unlockedAnimalCount : this.animals.length;
+    const max = unlockedOnly ? (this.credits.hasEverToppedUp() ? this.animals.length : this.baseUnlockedAnimalCount) : this.animals.length;
     return Math.floor(Math.random() * Math.max(1, max));
   }
   private clampAnimalIndex(i: number) { const n = this.animals.length; return ((i % n) + n) % n; }
@@ -155,8 +156,14 @@ export class CreatureBuilderComponent {
     this.activeAnimalIdx.set(idx);
   }
 
-  protected isPartLocked(key: PartKey) { return this.lockedParts.has(key); }
-  protected isAnimalLocked(index: number) { return index >= this.unlockedAnimalCount; }
+  protected isPartLocked(key: PartKey) {
+    return this.credits.hasEverToppedUp() ? false : this.baseLockedParts.has(key);
+  }
+  protected isAnimalLocked(index: number) {
+    if (this.credits.hasEverToppedUp()) return false;
+    const unlockedAnimalCount = this.baseUnlockedAnimalCount;
+    return index >= unlockedAnimalCount;
+  }
 
   // Pointer swipe handling (top=parts, bottom=animals)
   private topStartX: number | null = null;

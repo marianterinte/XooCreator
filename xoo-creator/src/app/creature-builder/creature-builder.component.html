@@ -2,8 +2,9 @@
   <!-- A. Header -->
   <header class="page-header">
     <button class="btn-icon back" type="button" aria-label="Înapoi" (click)="openExitConfirm()">←</button>
-  <div class="credits">{{ creditsLeft }} credits</div>
-  <div class="spacer"></div>
+    <div class="spacer"></div>
+    <div class="credits">{{ creditsLeft }} credits</div>
+    <div class="spacer"></div>
     <button class="btn-icon help" type="button" aria-label="Ajutor" (click)="openHelp()">?</button>
   </header>
 
@@ -81,10 +82,11 @@
       <p *ngIf="partsForGenerate().length === 0" style="margin:8px 0 0;color:#444">Nicio parte de corp deblocată selectată încă.</p>
     </div>
     <p style="margin:8px 0 0 0;color:#111">Cost: {{ generateCost }} credit</p>
+    <p *ngIf="creditsLeft < generateCost" class="warning">Nu ai suficiente credite. Te rugăm folosește Unlock pentru a alimentezi contul.</p>
     <div class="actions">
       <button type="button" class="btn secondary" (click)="cancelGenerate()">Renunță</button>
       <button type="button" class="btn unlock" (click)="goToUnlock()">Unlock</button>
-      <button type="button" class="btn primary" (click)="proceedGenerate()">Generează</button>
+      <button *ngIf="creditsLeft >= generateCost" type="button" class="btn primary" (click)="proceedGenerate()">Generează</button>
     </div>
   </dialog>
 
