@@ -2,16 +2,11 @@ import { Component, computed, signal } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { PersistenceService, BuilderConfig } from '../services/persistence.service';
 import { CreditsService } from '../services/credits.service';
+import { PartKey, PartDef, AnimalOption, BASE_PARTS } from './builder-types';
+import { PARTS, ANIMALS, BASE_UNLOCKED_ANIMAL_COUNT, BASE_LOCKED_PARTS } from './builder-data';
 import { Router } from '@angular/router';
+import { GenerationFlowService } from './generation-flow.service';
 
-// Types
-type PartKey = 'head' | 'body' | 'arms' | 'legs' | 'tail' | 'wings' | 'horn' | 'horns';
-type PartDef = { key: PartKey; name: string; image: string };
-type AnimalOption = { src: string; label: string; supports: ReadonlySet<PartKey> };
-
-// Base parts all animals support by default
-const BASE_PARTS: ReadonlyArray<PartKey> = ['head', 'body', 'arms', 'legs', 'tail'] as const;
-const S = (arr: readonly PartKey[]) => new Set(arr as PartKey[]);
 
 @Component({
   selector: 'app-creature-builder',
@@ -23,38 +18,14 @@ const S = (arr: readonly PartKey[]) => new Set(arr as PartKey[]);
 export class CreatureBuilderComponent {
 
   // Body parts order and mapping to representative images (cleaned to existing files)
-  protected readonly parts: ReadonlyArray<PartDef> = [
-    { key: 'head', name: 'Head', image: '/images/bodyparts/face.webp' },
-    { key: 'body', name: 'Body', image: '/images/bodyparts/body.webp' },
-  { key: 'arms', name: 'Arms', image: '/images/bodyparts/hands.webp' },
-  { key: 'legs', name: 'Legs', image: '/images/bodyparts/legs.webp' },
-    { key: 'tail', name: 'Tail', image: '/images/bodyparts/tail.webp' },
-  { key: 'wings', name: 'Wings', image: '/images/bodyparts/wings.webp' },
-  { key: 'horn', name: 'Horn', image: '/images/bodyparts/horn.webp' },
-  { key: 'horns', name: 'Horns', image: '/images/bodyparts/horns.webp' },
-  ] as const;
+  protected readonly parts: ReadonlyArray<PartDef> = PARTS;
 
   // Animal options (thumbnails + big image) from /images/animals/base
-  protected readonly animals: ReadonlyArray<AnimalOption> = [
-    { src: '/images/animals/base/bunny.jpg',   label: 'Bunny',    supports: S([...BASE_PARTS]) },
-    { src: '/images/animals/base/cat.jpg',     label: 'Cat',      supports: S([...BASE_PARTS]) },
-    { src: '/images/animals/base/giraffe.jpg', label: 'Giraffe',  supports: S([...BASE_PARTS, 'horn', 'horns']) }, // keep third
-    { src: '/images/animals/base/dog.jpg',     label: 'Dog',      supports: S([...BASE_PARTS]) },
-    { src: '/images/animals/base/fox.jpg',     label: 'Fox',      supports: S([...BASE_PARTS]) },
-    { src: '/images/animals/base/hippo.jpg',   label: 'Hippo',    supports: S([...BASE_PARTS]) },
-    { src: '/images/animals/base/monkey.jpg',  label: 'Monkey',   supports: S([...BASE_PARTS]) },
-    { src: '/images/animals/base/camel.jpg',   label: 'Camel',    supports: S([...BASE_PARTS]) },
-    { src: '/images/animals/base/deer.jpg',    label: 'Deer',     supports: S([...BASE_PARTS, 'horn', 'horns']) },
-    { src: '/images/animals/base/duck.jpg',    label: 'Duck',     supports: S([...BASE_PARTS, 'wings']) },
-    { src: '/images/animals/base/eagle.jpg',   label: 'Eagle',    supports: S([...BASE_PARTS, 'wings']) },
-    { src: '/images/animals/base/elephant.jpg',label: 'Elephant', supports: S([...BASE_PARTS]) },
-    { src: '/images/animals/base/ostrich.jpg', label: 'Ostrich',  supports: S([...BASE_PARTS, 'wings']) },
-    { src: '/images/animals/base/parrot.jpg',  label: 'Parrot',   supports: S([...BASE_PARTS, 'wings']) },
-  ] as const;
+  protected readonly animals: ReadonlyArray<AnimalOption> = ANIMALS;
 
   // Lock rules: last 2 body parts locked; only first 3 animals unlocked
-  private readonly baseUnlockedAnimalCount = 3;
-  private readonly baseLockedParts = new Set<PartKey>(['legs', 'tail', 'wings', 'horn', 'horns']);
+  private readonly baseUnlockedAnimalCount = BASE_UNLOCKED_ANIMAL_COUNT;
+  private readonly baseLockedParts = BASE_LOCKED_PARTS;
 
   // Index state
   protected activePartIdx = signal(0);
@@ -87,7 +58,7 @@ export class CreatureBuilderComponent {
   protected resultName = signal<string>('Hybrid');
   protected resultStory = signal<string>('');
   protected resultFlipped = signal(false);
-  private genTimer: any = null;
+  private genTimer: any = null; // kept for backward-compat; will rely on service
 
   // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
@@ -105,7 +76,12 @@ export class CreatureBuilderComponent {
     this.parts.filter(p => !this.isPartLocked(p.key) && !this.isAnimalLocked(this.assignments()[p.key] ?? 0))
   );
 
-  constructor(private readonly store: PersistenceService, private readonly router: Router, private readonly credits: CreditsService) {
+  constructor(
+    private readonly store: PersistenceService,
+    private readonly router: Router,
+    private readonly credits: CreditsService,
+    private readonly genFlow: GenerationFlowService,
+  ) {
     // Load config or randomize on first visit
     const cfg = this.store.load();
     if (cfg?.assignments) {
@@ -419,33 +395,25 @@ export class CreatureBuilderComponent {
     this.resultFlipped.set(false);
     // Simulate progress with playful steps
     // Total ~5000ms
-    const steps = [
-      { d: 900,  m: 'Amestecăm ADN-ul...' },
-      { d: 1100, m: 'Potrivim părțile...' },
-      { d: 900,  m: 'Adăugăm scântei de imaginație ✨' },
-      { d: 1100, m: 'Quasi-hiper sinteză...' },
-      { d: 1000, m: 'Ultimele retușuri...' },
-    ];
-    let i = 0;
-    const total = steps.length;
-    const tick = () => {
-      if (i < total) {
-        const pct = Math.min(100, Math.floor(((i + 1) / total) * 100));
+    this.genFlow.start({
+      onStart: () => {
+        this.showResult.set(true);
+        this.genInProgress.set(true);
+        this.genProgress.set(0);
+        this.genMessage.set('Pregătim magia...');
+      },
+      onProgress: (pct, message) => {
         this.genProgress.set(pct);
-        this.genMessage.set(steps[i].m);
-        const delay = steps[i].d;
-        i++;
-        this.genTimer = setTimeout(tick, delay);
-      } else {
-        // Done: show result
+        this.genMessage.set(message);
+      },
+      onComplete: () => {
         this.finishGeneration();
       }
-    };
-    tick();
+    });
   }
 
   private finishGeneration() {
-    if (this.genTimer) { clearTimeout(this.genTimer); this.genTimer = null; }
+  this.genFlow.cancel();
     this.genProgress.set(100);
     this.genInProgress.set(false);
     // For now, use a placeholder hybrid image
