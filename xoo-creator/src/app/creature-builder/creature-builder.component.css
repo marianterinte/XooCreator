@@ -132,10 +132,11 @@
 .confirm-modal.result .card-face.front .flip-hint.large{font-size:1.05rem;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .confirm-modal.result .card-face.back{transform:rotateY(180deg);background:#fff;display:flex}
 .confirm-modal.result .card-face.back .details{padding:16px;display:grid;gap:8px;align-content:start}
-.confirm-modal.result .card-face.back .res-thumb{width:84px;height:84px;object-fit:cover;border-radius:999px;border:2px solid #e5e7eb;justify-self:center}
+.confirm-modal.result .card-face.back .res-thumb{width:208px;height:208px;object-fit:cover;border-radius:999px;border:3px solid #e5e7eb;justify-self:center}
 .confirm-modal.result .card-face.back .res-name{margin:0 0 8px 0;font-size:2rem;text-align:center;font-weight:800}
 .confirm-modal.result .card-face.back .res-story{margin:0;color:#374151;line-height:1.6;font-size:1.15rem;text-align:center}
 @media (min-width: 768px){
+	.confirm-modal.result .card-face.back .res-thumb{width:260px;height:260px;border-width:4px}
 	.confirm-modal.result .result-body{padding:12px}
 	.confirm-modal.result .card-face.back .res-name{font-size:2.4rem}
 	.confirm-modal.result .card-face.back .res-story{font-size:1.2rem}
