@@ -121,6 +121,8 @@
   <!-- Result / Generation Modal -->
   <dialog class="confirm-modal result" [open]="showResult()" aria-labelledby="result-title" aria-modal="true">
     <h3 id="result-title">Rezultat</h3>
+    <!-- Top-right close button -->
+    <button type="button" class="close-x" aria-label="Închide" (click)="showResult.set(false)">×</button>
     <div class="summary" *ngIf="genInProgress(); else doneTpl">
       <div class="progress-wrap">
         <div class="progress-bar"><div class="fill" [style.width]="genProgress() + '%'"></div></div>
@@ -128,24 +130,24 @@
       </div>
     </div>
     <ng-template #doneTpl>
-      <div class="result-card" [class.flipped]="resultFlipped()" (click)="flipResultCard()">
-        <!-- Front now shows the image first -->
-        <div class="card-face front">
-          <img [src]="resultImage()" [alt]="resultName()" />
-          <div class="flip-hint large">← atinge pentru flip</div>
-        </div>
-        <!-- Back reveals name and story -->
-        <div class="card-face back">
-          <div class="details">
-            <img class="res-thumb" [src]="resultImage()" [alt]="resultName()" />
-            <h4 class="res-name">{{ resultName() }}</h4>
-            <p class="res-story">{{ resultStory() }}</p>
+      <div class="result-body">
+        <div class="result-card" [class.flipped]="resultFlipped()" (click)="flipResultCard()">
+          <!-- Front now shows the image first -->
+          <div class="card-face front">
+            <img [src]="resultImage()" [alt]="resultName()" />
+            <div class="flip-hint large">← atinge pentru flip</div>
+          </div>
+          <!-- Back reveals name and story -->
+          <div class="card-face back">
+            <div class="details">
+              <img class="res-thumb" [src]="resultImage()" [alt]="resultName()" />
+              <h4 class="res-name">{{ resultName() }}</h4>
+              <p class="res-story">{{ resultStory() }}</p>
+            </div>
           </div>
         </div>
       </div>
     </ng-template>
-    <div class="actions">
-      <button type="button" class="btn secondary" (click)="showResult.set(false)">Close</button>
-    </div>
+    <!-- actions removed for result modal; use top-right X -->
   </dialog>
 </section>
