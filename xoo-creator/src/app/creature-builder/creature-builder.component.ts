@@ -6,7 +6,11 @@ import { Router } from '@angular/router';
 // Types
 type PartKey = 'head' | 'body' | 'arms' | 'legs' | 'tail' | 'wings' | 'horn' | 'horns';
 type PartDef = { key: PartKey; name: string; image: string };
-type AnimalOption = { src: string; label: string };
+type AnimalOption = { src: string; label: string; supports: ReadonlySet<PartKey> };
+
+// Base parts all animals support by default
+const BASE_PARTS: ReadonlyArray<PartKey> = ['head', 'body', 'arms', 'legs', 'tail'] as const;
+const S = (arr: readonly PartKey[]) => new Set(arr as PartKey[]);
 
 @Component({
   selector: 'app-creature-builder',
@@ -31,13 +35,13 @@ export class CreatureBuilderComponent {
 
   // Animal options (thumbnails + big image)
   protected readonly animals: ReadonlyArray<AnimalOption> = [
-    { src: '/images/animals/bunny.jpg', label: 'Bunny' },
-    { src: '/images/animals/cat.jpg', label: 'Cat' },
-    { src: '/images/animals/giraffe.jpg', label: 'Giraffe' },
-    { src: '/images/animals/dog.jpg', label: 'Dog' },
-    { src: '/images/animals/fox.jpg', label: 'Fox' },
-    { src: '/images/animals/hippo.jpg', label: 'Hippo' },
-    { src: '/images/animals/monkey.jpg', label: 'Monkey' },
+  { src: '/images/animals/bunny.jpg',   label: 'Bunny',   supports: S([...BASE_PARTS]) },
+  { src: '/images/animals/cat.jpg',     label: 'Cat',     supports: S([...BASE_PARTS]) },
+  { src: '/images/animals/giraffe.jpg', label: 'Giraffe', supports: S([...BASE_PARTS, 'horn', 'horns']) },
+  { src: '/images/animals/dog.jpg',     label: 'Dog',     supports: S([...BASE_PARTS]) },
+  { src: '/images/animals/fox.jpg',     label: 'Fox',     supports: S([...BASE_PARTS, 'wings']) },
+  { src: '/images/animals/hippo.jpg',   label: 'Hippo',   supports: S([...BASE_PARTS]) },
+  { src: '/images/animals/monkey.jpg',  label: 'Monkey',  supports: S([...BASE_PARTS, 'wings']) },
   ] as const;
 
   // Lock rules: last 2 body parts locked; only first 3 animals unlocked
@@ -59,6 +63,12 @@ export class CreatureBuilderComponent {
   protected currentAnimal = computed(() => this.animals[(this.activeAnimalIdx() + this.animals.length) % this.animals.length]);
   protected isCurrentLocked = computed(() => this.isPartLocked(this.currentPart().key) || this.isAnimalLocked(this.activeAnimalIdx()));
 
+  // Animals filtered by support for the currently selected body part
+  protected animalsForCurrentPart = computed(() => {
+    const part = this.currentPart().key;
+    return this.animals.filter(a => a.supports.has(part));
+  });
+
   constructor(private readonly store: PersistenceService, private readonly router: Router) {
     // Load config or randomize on first visit
     const cfg = this.store.load();
@@ -74,14 +84,20 @@ export class CreatureBuilderComponent {
         const idx = this.parts.findIndex(p => p.key === cfg.activePartKey);
         if (idx >= 0) this.activePartIdx.set(idx);
       }
-      // active animal mirrors assignment of current part
-      this.syncActiveAnimalToCurrentPart();
+      // Ensure current part uses a supported animal
+      this.syncActiveAnimalToCurrentPart(true);
     } else {
-      // Randomize each part once
-  const m: Record<PartKey, number> = this.parts.reduce((acc, p) => { (acc as any)[p.key] = 0; return acc; }, {} as Record<PartKey, number>);
-  for (const p of this.parts) m[p.key] = this.randAnimalIndex(true);
+      // Randomize each part once using supported (prefer unlocked) animals
+      const m: Record<PartKey, number> = this.parts.reduce((acc, p) => { (acc as any)[p.key] = 0; return acc; }, {} as Record<PartKey, number>);
+      for (const p of this.parts) {
+        const supported = this.animals.filter(a => a.supports.has(p.key));
+        const unlockedSupported = supported.filter(a => this.animals.indexOf(a) < this.unlockedAnimalCount);
+        const pool = unlockedSupported.length ? unlockedSupported : supported;
+        const pick = pool.length ? pool[Math.floor(Math.random() * pool.length)] : this.animals[0];
+        m[p.key] = this.animals.indexOf(pick);
+      }
       this.assignments.set(m);
-      this.syncActiveAnimalToCurrentPart();
+      this.syncActiveAnimalToCurrentPart(true);
       this.persist();
     }
 
@@ -106,9 +122,27 @@ export class CreatureBuilderComponent {
     return Math.floor(Math.random() * Math.max(1, max));
   }
   private clampAnimalIndex(i: number) { const n = this.animals.length; return ((i % n) + n) % n; }
-  private syncActiveAnimalToCurrentPart() {
-    const idx = this.assignments()[this.currentPart().key] ?? 0;
-    this.activeAnimalIdx.set(this.clampAnimalIndex(idx));
+  private clampIndex(i: number, n: number) { return ((i % n) + n) % n; }
+  private syncActiveAnimalToCurrentPart(updateAssignment = false) {
+    const key = this.currentPart().key;
+    let idx = this.assignments()[key] ?? 0;
+    idx = this.clampAnimalIndex(idx);
+
+    const current = this.animals[idx];
+    const supported = current?.supports.has(key);
+    if (!supported) {
+      const filtered = this.animalsForCurrentPart();
+      if (filtered.length > 0) {
+        const fallbackGlobal = this.animals.indexOf(filtered[0]);
+        idx = fallbackGlobal >= 0 ? fallbackGlobal : 0;
+      } else {
+        idx = 0;
+      }
+      if (updateAssignment) {
+        this.assignments.update(m => ({ ...m, [key]: idx }));
+      }
+    }
+    this.activeAnimalIdx.set(idx);
   }
 
   protected isPartLocked(key: PartKey) { return this.lockedParts.has(key); }
@@ -195,16 +229,23 @@ export class CreatureBuilderComponent {
   selectPart(index: number) {
     const i = (index + this.parts.length) % this.parts.length;
     this.activePartIdx.set(i);
-  this.syncActiveAnimalToCurrentPart();
-  this.persist();
+    this.syncActiveAnimalToCurrentPart(true);
+    this.persist();
   }
+  // index is position inside filtered list for current part
   selectAnimal(index: number) {
-    const i = (index + this.animals.length) % this.animals.length;
-    this.activeAnimalIdx.set(i);
-  // Update assignment for current part
-  const key = this.currentPart().key;
-  this.assignments.update(m => ({ ...m, [key]: i }));
-  this.persist();
+    const filtered = this.animalsForCurrentPart();
+    if (filtered.length === 0) return;
+    const i = this.clampIndex(index, filtered.length);
+    const selected = filtered[i];
+    const globalIdx = this.animals.indexOf(selected);
+    if (globalIdx < 0) return;
+
+    this.activeAnimalIdx.set(globalIdx);
+    // Update assignment for current part
+    const key = this.currentPart().key;
+    this.assignments.update(m => ({ ...m, [key]: globalIdx }));
+    this.persist();
   }
 
   private nextPart() {
@@ -220,19 +261,41 @@ export class CreatureBuilderComponent {
     this.persist();
   }
   private nextAnimal() {
-    const next = (this.activeAnimalIdx() + 1) % this.animals.length;
-    this.activeAnimalIdx.set(next);
+    const filtered = this.animalsForCurrentPart();
+    const n = filtered.length;
+    if (n === 0) return;
+
+    const currentGlobal = this.activeAnimalIdx();
+    const curPos = Math.max(0, filtered.findIndex(a => this.animals.indexOf(a) === currentGlobal));
+    const nextPos = (curPos + 1) % n;
+    const nextAnimal = filtered[nextPos];
+    const globalIdx = this.animals.indexOf(nextAnimal);
+
+    this.activeAnimalIdx.set(globalIdx);
     const key = this.currentPart().key;
-    this.assignments.update(m => ({ ...m, [key]: next }));
+    this.assignments.update(m => ({ ...m, [key]: globalIdx }));
     this.persist();
   }
   private prevAnimal() {
-    const prev = (this.activeAnimalIdx() - 1 + this.animals.length) % this.animals.length;
-    this.activeAnimalIdx.set(prev);
+    const filtered = this.animalsForCurrentPart();
+    const n = filtered.length;
+    if (n === 0) return;
+
+    const currentGlobal = this.activeAnimalIdx();
+    const curPos = Math.max(0, filtered.findIndex(a => this.animals.indexOf(a) === currentGlobal));
+    const prevPos = (curPos - 1 + n) % n;
+    const prevAnimal = filtered[prevPos];
+    const globalIdx = this.animals.indexOf(prevAnimal);
+
+    this.activeAnimalIdx.set(globalIdx);
     const key = this.currentPart().key;
-    this.assignments.update(m => ({ ...m, [key]: prev }));
+    this.assignments.update(m => ({ ...m, [key]: globalIdx }));
     this.persist();
   }
+
+  // Helpers for template
+  protected getGlobalIndex(a: AnimalOption) { return this.animals.indexOf(a); }
+  protected isActiveAnimal(a: AnimalOption) { return this.getGlobalIndex(a) === this.activeAnimalIdx(); }
 
   // Modal actions
   confirmGenerate() { this.showConfirm.set(true); }

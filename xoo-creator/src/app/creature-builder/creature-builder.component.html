@@ -49,13 +49,13 @@
 
   <div class="carousel thumbs" role="listbox" aria-label="Animals">
       <button
-        *ngFor="let a of animals; let i = index"
-        class="thumb" [class.active]="i === activeAnimalIdx()" [class.locked]="isAnimalLocked(i)"
-        type="button" role="option" [attr.aria-selected]="i === activeAnimalIdx()"
+        *ngFor="let a of animalsForCurrentPart(); let i = index"
+        class="thumb" [class.active]="isActiveAnimal(a)" [class.locked]="isAnimalLocked(getGlobalIndex(a))"
+        type="button" role="option" [attr.aria-selected]="isActiveAnimal(a)"
         (click)="selectAnimal(i)"
         [disabled]="false">
         <img [src]="a.src" [alt]="a.label" />
-        <span *ngIf="isAnimalLocked(i)" class="badge-lock" aria-hidden="true">🔒</span>
+        <span *ngIf="isAnimalLocked(getGlobalIndex(a))" class="badge-lock" aria-hidden="true">🔒</span>
       </button>
     </div>
   </section>
