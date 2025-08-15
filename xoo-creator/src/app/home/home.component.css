@@ -1,22 +1,41 @@
-.home{display:grid;gap:18px;place-items:stretch;padding:16px}
-.hero{display:grid;gap:10px;align-content:start}
-.hero h1{margin:0;font-size:2rem}
-.hero .tagline{margin:0;color:#374151;line-height:1.5}
-.cta{display:inline-block;padding:12px 16px;border-radius:12px;background:#4F46E5;color:#fff;text-decoration:none;width:fit-content}
+.home{display:grid;gap:18px;place-items:stretch}
+
+/* Top bar */
+.topbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(255,255,255,.8);backdrop-filter: blur(8px);border-bottom:1px solid #e5e7eb}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#22d3ee,#a78bfa,#f472b6);display:grid;place-items:center;color:#fff;font-weight:800}
+.brand-text{line-height:1}
+.brand-title{font-weight:800}
+.brand-sub{font-size:.8rem;color:#6b7280}
+.spacer{flex:1}
+.btn.signin{border:none;border-radius:10px;padding:8px 12px;background:#111;color:#fff;cursor:pointer}
+.btn.signin:hover{background:#000}
+
+/* Hero banner */
+.hero{display:grid;gap:12px;padding:24px 16px;background:
+	radial-gradient(ellipse at -10% 10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
+	radial-gradient(ellipse at 120% -10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
+	linear-gradient(135deg,#fef3c7,#e9d5ff,#bfdbfe,#bbf7d0);background-size:auto,auto,300% 300%;animation: heroShift 12s ease-in-out infinite alternate}
+.hero h1{margin:0;font-size:2.2rem}
+.hero .tagline{margin:0;color:#374151;line-height:1.6;max-width:70ch}
+.cta{display:inline-block;padding:12px 16px;border-radius:12px;background:#4F46E5;color:#fff;text-decoration:none;width:fit-content;box-shadow:0 8px 18px rgba(79,70,229,.25)}
 .cta:hover{background:#4338CA}
 
+@keyframes heroShift{from{background-position:0% 0%} to{background-position:100% 100%}}
+
+.section-title{margin:0 16px}
+
 /* Showcase card */
-.showcase{display:grid}
+.showcase{display:grid;padding:0 16px 16px}
 .showcase-card{border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:12px;display:grid;gap:8px}
 .showcase-card .frame{position:relative;aspect-ratio: 3 / 2;overflow:hidden;border-radius:12px;background:#111}
 .showcase-card .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .showcase-card .shot.enter{animation: fadeZoomIn 600ms cubic-bezier(.2,.7,.3,1)}
 .showcase-card .legend{font-size:.95rem;color:#4b5563;text-align:center}
 
-@keyframes fadeZoomIn{
-	from{opacity:0;transform:scale(1.04)}
-	to{opacity:1;transform:scale(1)}
-}
+@keyframes fadeZoomIn{from{opacity:0;transform:scale(1.04)} to{opacity:1;transform:scale(1)}}
 
-.nav-meta{display:flex;gap:12px;flex-wrap:wrap}
-.nav-meta a{color:#4F46E5;text-decoration:underline}
+@media (min-width: 768px){
+	.hero{padding:42px 24px}
+	.hero h1{font-size:2.6rem}
+}

@@ -45,4 +45,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       clearInterval(this.intervalId);
     }
   }
+
+  onSignIn(): void {
+    // Placeholder sign-in action; can be wired to a real auth flow later
+    alert('Sign in coming soon');
+  }
 }

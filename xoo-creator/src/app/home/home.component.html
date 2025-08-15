@@ -1,29 +1,38 @@
 <section class="home" aria-labelledby="home-title">
-  <!-- Intro / Presentation -->
+  <!-- Top header with brand and Sign in -->
+  <div class="topbar" role="banner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">IZ</div>
+      <div class="brand-text">
+        <div class="brand-title">Imagination Zoo</div>
+        <div class="brand-sub">a Path of Imagination product</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button type="button" class="btn signin" (click)="onSignIn()">Sign in</button>
+  </div>
+
+  <!-- Colorful banner / hero -->
   <header class="hero">
-    <h1 id="home-title">Xoo Creator</h1>
+    <h1 id="home-title">Imagination Zoo</h1>
     <p class="tagline">Combină părți de animale și creează creaturi fantastice. Alege, generează și descoperă povești unice pentru fiecare hibrid.</p>
     <a routerLink="/builder" class="cta">Începe să creezi</a>
   </header>
 
+  <h2 class="section-title">Galerie hibrizi</h2>
+
   <!-- Hybrids Showcase Card -->
-  <section class="showcase" aria-label="Exemple de hibrizi">
+  <section class="showcase" aria-label="Galerie hibrizi">
     <div class="showcase-card">
       <div class="frame">
-        <!-- We toggle *ngIf on a wrapper to replay the enter animation each swap -->
-        <ng-container *ngIf="swap(); else other">
+        <!-- Replay enter animation at each swap -->
+        @if (swap()) {
           <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
-        </ng-container>
-        <ng-template #other>
+        } @else {
           <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
-        </ng-template>
+        }
       </div>
-      <div class="legend">Galerie hibrizi — se schimbă la fiecare 2–3 secunde</div>
+      <div class="legend">Se schimbă la fiecare 2–3 secunde</div>
     </div>
   </section>
-
-  <!-- Helpful links (optional) -->
-  <nav class="nav-meta" aria-label="Navigare rapidă">
-    <a routerLink="/builder" data-testid="exit-goLink" aria-label="Mergi la Builder">Mergi la Builder</a>
-  </nav>
 </section>
