@@ -4,7 +4,7 @@ import { PersistenceService, BuilderConfig } from '../services/persistence.servi
 import { Router } from '@angular/router';
 
 // Types
-type PartKey = 'head' | 'body' | 'arms' | 'legs' | 'tail';
+type PartKey = 'head' | 'body' | 'arms' | 'legs' | 'tail' | 'wings' | 'horn' | 'horns';
 type PartDef = { key: PartKey; name: string; image: string };
 type AnimalOption = { src: string; label: string };
 
@@ -21,9 +21,12 @@ export class CreatureBuilderComponent {
   protected readonly parts: ReadonlyArray<PartDef> = [
     { key: 'head', name: 'Head', image: '/images/bodyparts/face.webp' },
     { key: 'body', name: 'Body', image: '/images/bodyparts/body.webp' },
-    { key: 'arms', name: 'Arms', image: '/images/bodyparts/hand.webp' },
-    { key: 'legs', name: 'Legs', image: '/images/bodyparts/foot.webp' },
+  { key: 'arms', name: 'Arms', image: '/images/bodyparts/hands.webp' },
+  { key: 'legs', name: 'Legs', image: '/images/bodyparts/legs.webp' },
     { key: 'tail', name: 'Tail', image: '/images/bodyparts/tail.webp' },
+  { key: 'wings', name: 'Wings', image: '/images/bodyparts/wings.webp' },
+  { key: 'horn', name: 'Horn', image: '/images/bodyparts/horn.webp' },
+  { key: 'horns', name: 'Horns', image: '/images/bodyparts/horns.webp' },
   ] as const;
 
   // Animal options (thumbnails + big image)
@@ -39,12 +42,14 @@ export class CreatureBuilderComponent {
 
   // Lock rules: last 2 body parts locked; only first 3 animals unlocked
   private readonly unlockedAnimalCount = 4;
-  private readonly lockedParts = new Set<PartKey>(['legs', 'tail']);
+  private readonly lockedParts = new Set<PartKey>(['legs', 'tail', 'wings', 'horn', 'horns']);
 
   // Index state
   protected activePartIdx = signal(0);
   protected activeAnimalIdx = signal(0);
-  protected assignments = signal<Record<PartKey, number>>({ head: 0, body: 0, arms: 0, legs: 0, tail: 0 });
+  protected assignments = signal<Record<PartKey, number>>(this.parts.reduce((acc, p) => {
+    (acc as any)[p.key] = 0; return acc;
+  }, {} as Record<PartKey, number>));
   protected showConfirm = signal(false);
   protected showExitConfirm = signal(false);
   protected showHelp = signal(false);
@@ -59,7 +64,7 @@ export class CreatureBuilderComponent {
     const cfg = this.store.load();
     if (cfg?.assignments) {
       // Map unknown keys defensively
-      const m: Record<PartKey, number> = { head: 0, body: 0, arms: 0, legs: 0, tail: 0 };
+      const m: Record<PartKey, number> = this.parts.reduce((acc, p) => { (acc as any)[p.key] = 0; return acc; }, {} as Record<PartKey, number>);
       for (const p of this.parts) {
         const n = cfg.assignments[p.key] ?? Math.floor(Math.random() * this.animals.length);
         m[p.key] = this.clampAnimalIndex(n);
@@ -73,7 +78,7 @@ export class CreatureBuilderComponent {
       this.syncActiveAnimalToCurrentPart();
     } else {
       // Randomize each part once
-      const m: Record<PartKey, number> = { head: 0, body: 0, arms: 0, legs: 0, tail: 0 };
+  const m: Record<PartKey, number> = this.parts.reduce((acc, p) => { (acc as any)[p.key] = 0; return acc; }, {} as Record<PartKey, number>);
   for (const p of this.parts) m[p.key] = this.randAnimalIndex(true);
       this.assignments.set(m);
       this.syncActiveAnimalToCurrentPart();

@@ -65,7 +65,7 @@
   </div>
 
   <!-- Confirmation Modal -->
-  <dialog class="confirm-modal" [open]="showConfirm()" aria-labelledby="confirm-title" aria-modal="true">
+  <dialog class="confirm-modal compact" [open]="showConfirm()" aria-labelledby="confirm-title" aria-modal="true">
     <h3 id="confirm-title">Ai ales această configurație. Generăm?</h3>
     <div class="summary">
       <ul>
@@ -82,7 +82,7 @@
   </dialog>
 
   <!-- Exit Confirmation Modal -->
-  <dialog class="confirm-modal" [open]="showExitConfirm()" aria-labelledby="exit-title" aria-modal="true">
+  <dialog class="confirm-modal compact" [open]="showExitConfirm()" aria-labelledby="exit-title" aria-modal="true">
     <h3 id="exit-title">Renunți la modificări?</h3>
     <p style="margin:8px 0 0 0;color:#444">Schimbările curente nu vor fi păstrate.</p>
     <div class="actions">

@@ -84,6 +84,7 @@
 	animation: modal-pop-in 220ms cubic-bezier(.2,.7,.3,1) both, gradientShift 10s ease-in-out infinite alternate;
 }
 .confirm-modal.tutorial{height:54dvh}
+.confirm-modal.compact{height:54dvh}
 .confirm-modal:not([open]){display:none !important}
 .confirm-modal[open]{animation: modal-pop-in 220ms cubic-bezier(.2,.7,.3,1) both}
 .confirm-modal::backdrop{background:radial-gradient(circle at center, rgba(0,0,0,.45), rgba(0,0,0,.65));animation: backdrop-fade-in 220ms ease-out both}
