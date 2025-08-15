@@ -1,16 +1,29 @@
-<section class="home">
-  <h2>Xoo Creator</h2>
-  <p>Bine ai venit! Începe prin a crea un animăluț mutant.</p>
-  <a routerLink="/builder" class="cta">Creează animăluț</a>
+<section class="home" aria-labelledby="home-title">
+  <!-- Intro / Presentation -->
+  <header class="hero">
+    <h1 id="home-title">Xoo Creator</h1>
+    <p class="tagline">Combină părți de animale și creează creaturi fantastice. Alege, generează și descoperă povești unice pentru fiecare hibrid.</p>
+    <a routerLink="/builder" class="cta">Începe să creezi</a>
+  </header>
 
-  <div class="nav-meta">
-    <div class="block">
-      <h3>Exits</h3>
-      <a routerLink="/builder" data-testid="exit-goLink" aria-label="Go to next tile">Go to Builder</a>
+  <!-- Hybrids Showcase Card -->
+  <section class="showcase" aria-label="Exemple de hibrizi">
+    <div class="showcase-card">
+      <div class="frame">
+        <!-- We toggle *ngIf on a wrapper to replay the enter animation each swap -->
+        <ng-container *ngIf="swap(); else other">
+          <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
+        </ng-container>
+        <ng-template #other>
+          <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
+        </ng-template>
+      </div>
+      <div class="legend">Galerie hibrizi — se schimbă la fiecare 2–3 secunde</div>
     </div>
-    <div class="block">
-      <h3>Parent</h3>
-      <a routerLink="/" data-testid="parent-link" aria-label="Go to parent">Home</a>
-    </div>
-  </div>
+  </section>
+
+  <!-- Helpful links (optional) -->
+  <nav class="nav-meta" aria-label="Navigare rapidă">
+    <a routerLink="/builder" data-testid="exit-goLink" aria-label="Mergi la Builder">Mergi la Builder</a>
+  </nav>
 </section>
