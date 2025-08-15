@@ -1,5 +1,5 @@
 import { Component, computed, signal } from '@angular/core';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { PersistenceService, BuilderConfig } from '../services/persistence.service';
 import { Router } from '@angular/router';
 
@@ -11,7 +11,7 @@ type AnimalOption = { src: string; label: string };
 @Component({
   selector: 'app-creature-builder',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, NgIf],
   templateUrl: './creature-builder.component.html',
   styleUrl: './creature-builder.component.css'
 })
@@ -28,10 +28,18 @@ export class CreatureBuilderComponent {
 
   // Animal options (thumbnails + big image)
   protected readonly animals: ReadonlyArray<AnimalOption> = [
-    { src: '/images/animals/fox.png', label: 'Fox' },
-    { src: '/images/animals/lion.png', label: 'Lion' },
-    { src: '/images/animals/squirel.jpg', label: 'Squirrel' },
+    { src: '/images/animals/bunny.jpg', label: 'Bunny' },
+    { src: '/images/animals/cat.jpg', label: 'Cat' },
+    { src: '/images/animals/dog.jpg', label: 'Dog' },
+    { src: '/images/animals/fox.jpg', label: 'Fox' },
+    { src: '/images/animals/giraffe.jpg', label: 'Giraffe' },
+    { src: '/images/animals/hippo.jpg', label: 'Hippo' },
+    { src: '/images/animals/monkey.jpg', label: 'Monkey' },
   ] as const;
+
+  // Lock rules: last 2 body parts locked; only first 3 animals unlocked
+  private readonly unlockedAnimalCount = 3;
+  private readonly lockedParts = new Set<PartKey>(['legs', 'tail']);
 
   // Index state
   protected activePartIdx = signal(0);
@@ -43,6 +51,7 @@ export class CreatureBuilderComponent {
   // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
   protected currentAnimal = computed(() => this.animals[(this.activeAnimalIdx() + this.animals.length) % this.animals.length]);
+  protected isCurrentLocked = computed(() => this.isPartLocked(this.currentPart().key) || this.isAnimalLocked(this.activeAnimalIdx()));
 
   constructor(private readonly store: PersistenceService, private readonly router: Router) {
     // Load config or randomize on first visit
@@ -64,7 +73,7 @@ export class CreatureBuilderComponent {
     } else {
       // Randomize each part once
       const m: Record<PartKey, number> = { head: 0, body: 0, arms: 0, legs: 0, tail: 0 };
-      for (const p of this.parts) m[p.key] = this.randAnimalIndex();
+  for (const p of this.parts) m[p.key] = this.randAnimalIndex(true);
       this.assignments.set(m);
       this.syncActiveAnimalToCurrentPart();
       this.persist();
@@ -80,12 +89,18 @@ export class CreatureBuilderComponent {
     this.store.save(cfg);
   }
 
-  private randAnimalIndex() { return Math.floor(Math.random() * this.animals.length); }
+  private randAnimalIndex(unlockedOnly = false) {
+    const max = unlockedOnly ? this.unlockedAnimalCount : this.animals.length;
+    return Math.floor(Math.random() * Math.max(1, max));
+  }
   private clampAnimalIndex(i: number) { const n = this.animals.length; return ((i % n) + n) % n; }
   private syncActiveAnimalToCurrentPart() {
     const idx = this.assignments()[this.currentPart().key] ?? 0;
     this.activeAnimalIdx.set(this.clampAnimalIndex(idx));
   }
+
+  protected isPartLocked(key: PartKey) { return this.lockedParts.has(key); }
+  protected isAnimalLocked(index: number) { return index >= this.unlockedAnimalCount; }
 
   // Pointer swipe handling (top=parts, bottom=animals)
   private topStartX: number | null = null;
@@ -222,5 +237,9 @@ export class CreatureBuilderComponent {
     this.store.clear();
     this.showExitConfirm.set(false);
     await this.router.navigateByUrl('/');
+  }
+
+  goToUnlock() {
+    this.router.navigateByUrl('/unlock');
   }
 }

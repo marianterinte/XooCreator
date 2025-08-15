@@ -8,13 +8,15 @@
 
   <!-- B. Panou Sus — Body Parts: carousel (thumbnails) + big image -->
   <section class="panel panel-top" aria-labelledby="bp-section-title">
-    <div class="carousel thumbs" role="listbox" aria-label="Body parts">
+  <div class="carousel thumbs" role="listbox" aria-label="Body parts">
       <button
         *ngFor="let p of parts; let i = index"
-        class="thumb" [class.active]="i === activePartIdx()"
-        type="button" role="option" [attr.aria-selected]="i === activePartIdx()"
-        (click)="selectPart(i)">
-        <img [src]="p.image" [alt]="p.name" />
+    class="thumb" [class.active]="i === activePartIdx()" [class.locked]="isPartLocked(p.key)"
+    type="button" role="option" [attr.aria-selected]="i === activePartIdx()"
+    (click)="selectPart(i)"
+    [disabled]="false">
+    <img [src]="p.image" [alt]="p.name" />
+    <span *ngIf="isPartLocked(p.key)" class="badge-lock" aria-hidden="true">🔒</span>
       </button>
     </div>
 
@@ -25,7 +27,7 @@
       (pointercancel)="onTopPointerCancel($event)"
       [style.transform]="topDragX() ? 'translateX(' + topDragX() + 'px)' : ''"
       [class.dragging]="topDragging()">
-      <img data-testid="bp-image" [src]="currentPart().image" [alt]="currentPart().name + ' preview'" />
+  <img data-testid="bp-image" [src]="currentPart().image" [alt]="currentPart().name + ' preview'" />
       <figcaption class="preview-caption" data-testid="bp-label">{{ currentPart().name }}</figcaption>
     </figure>
   </section>
@@ -46,17 +48,20 @@
   <div class="carousel thumbs" role="listbox" aria-label="Animals">
       <button
         *ngFor="let a of animals; let i = index"
-        class="thumb" [class.active]="i === activeAnimalIdx()"
+        class="thumb" [class.active]="i === activeAnimalIdx()" [class.locked]="isAnimalLocked(i)"
         type="button" role="option" [attr.aria-selected]="i === activeAnimalIdx()"
-        (click)="selectAnimal(i)">
+        (click)="selectAnimal(i)"
+        [disabled]="false">
         <img [src]="a.src" [alt]="a.label" />
+        <span *ngIf="isAnimalLocked(i)" class="badge-lock" aria-hidden="true">🔒</span>
       </button>
     </div>
   </section>
 
   <!-- D. Acțiune jos — Generate -->
   <div class="action-bar">
-    <button type="button" class="btn-generate" data-testid="btn-generate" aria-label="Generate creature" (click)="confirmGenerate()">Generate</button>
+    <button *ngIf="!isCurrentLocked()" type="button" class="btn-generate" data-testid="btn-generate" aria-label="Generate creature" (click)="confirmGenerate()">Generate</button>
+    <button *ngIf="isCurrentLocked()" type="button" class="btn-unlock" data-testid="btn-unlock" aria-label="Unlock" (click)="goToUnlock()">Unlock</button>
   </div>
 
   <!-- Confirmation Modal -->
