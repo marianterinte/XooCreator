@@ -2,7 +2,8 @@
   <!-- A. Header -->
   <header class="page-header">
     <button class="btn-icon back" type="button" aria-label="Înapoi" (click)="openExitConfirm()">←</button>
-    <div class="spacer"></div>
+  <div class="credits">{{ creditsLeft }} credits</div>
+  <div class="spacer"></div>
     <button class="btn-icon help" type="button" aria-label="Ajutor" (click)="openHelp()">?</button>
   </header>
 
@@ -71,15 +72,18 @@
     <h3 id="confirm-title">Ai ales această configurație. Generăm?</h3>
     <div class="summary">
       <ul>
-        <li *ngFor="let p of partsForGenerate()">
+        <li *ngFor="let p of parts">
           <strong>{{ p.name }}:</strong>
           {{ animals[assignments()[p.key]].label }}
+          <span *ngIf="isPartLocked(p.key) || isAnimalLocked(assignments()[p.key])" style="color:#6b7280">(locked)</span>
         </li>
       </ul>
       <p *ngIf="partsForGenerate().length === 0" style="margin:8px 0 0;color:#444">Nicio parte de corp deblocată selectată încă.</p>
     </div>
+    <p style="margin:8px 0 0 0;color:#111">Cost: {{ generateCost }} credit</p>
     <div class="actions">
       <button type="button" class="btn secondary" (click)="cancelGenerate()">Renunță</button>
+      <button type="button" class="btn unlock" (click)="goToUnlock()">Unlock</button>
       <button type="button" class="btn primary" (click)="proceedGenerate()">Generează</button>
     </div>
   </dialog>

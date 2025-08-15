@@ -1,6 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { PersistenceService, BuilderConfig } from '../services/persistence.service';
+import { CreditsService } from '../services/credits.service';
 import { Router } from '@angular/router';
 
 // Types
@@ -57,6 +58,7 @@ export class CreatureBuilderComponent {
   protected showConfirm = signal(false);
   protected showExitConfirm = signal(false);
   protected showHelp = signal(false);
+  protected readonly generateCost = 1; // 1 credit per image
 
   // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
@@ -74,7 +76,7 @@ export class CreatureBuilderComponent {
     this.parts.filter(p => !this.isPartLocked(p.key) && !this.isAnimalLocked(this.assignments()[p.key] ?? 0))
   );
 
-  constructor(private readonly store: PersistenceService, private readonly router: Router) {
+  constructor(private readonly store: PersistenceService, private readonly router: Router, private readonly credits: CreditsService) {
     // Load config or randomize on first visit
     const cfg = this.store.load();
     if (cfg?.assignments) {
@@ -112,6 +114,9 @@ export class CreatureBuilderComponent {
       if (!seen) this.showHelp.set(true);
     } catch { /* ignore */ }
   }
+
+  // Expose credits count for template
+  get creditsLeft() { return this.credits.credits(); }
 
   private persist() {
     const cfg: BuilderConfig = {
@@ -313,6 +318,14 @@ export class CreatureBuilderComponent {
       if (!this.isAnimalLocked(idx)) {
         finalAssignments[p.key] = idx;
       }
+    }
+    // Try spend credits
+    const ok = this.credits.trySpend(this.generateCost);
+    if (!ok) {
+      // Not enough credits -> send to unlock page
+      this.showConfirm.set(false);
+      this.router.navigateByUrl('/unlock');
+      return;
     }
     // Persist last generated config separately (does not overwrite working assignments)
     try {
