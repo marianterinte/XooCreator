@@ -8,22 +8,20 @@
 .panel-bottom{min-height:30vh}
 .section-header h2{margin:0;font-size:1rem}
 
-/* Media row (top panel) */
-.media-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px}
-.nav-btn{min-width:44px;min-height:44px;display:grid;place-items:center;border:1px solid #ddd;background:#fff;border-radius:10px;cursor:pointer}
-.nav-btn:hover{background:#f6f7ff;border-color:#c7ccff}
-.preview{margin:0;display:grid;gap:6px;justify-items:center}
-.preview img{width:100%;max-width:340px;aspect-ratio:9/16;object-fit:contain;border-radius:12px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+/* (Legacy chips removed in this iteration, keep styles in case we want them back) */
+/* .bp-slots{display:flex;gap:8px;overflow:auto;padding:4px 2px}
+.bp-chip{flex:0 0 auto;min-height:36px;min-width:56px;padding:8px 12px;border:1px solid #ddd;border-radius:999px;background:#fff;cursor:pointer}
+.bp-chip.selected{border-color:#4F46E5;box-shadow:0 0 0 3px rgba(79,70,229,.12)} */
+
+/* Media preview panels */
+.media-row{display:grid;grid-template-columns:1fr;align-items:center;gap:8px}
+.preview{margin:0;display:grid;gap:6px;justify-items:center;touch-action:pan-y}
+.preview.dragging{transition:none}
+.preview img{width:100%;max-width:520px;aspect-ratio:9/16;object-fit:contain;border-radius:12px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.05);user-select:none;-webkit-user-drag:none;pointer-events:none}
 .preview-caption{font-size:.9rem;color:#666}
 
 /* Carousel (bottom panel) */
-.carousel-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px}
-.carousel{display:flex;gap:10px;overflow:auto;padding-bottom:4px;scroll-snap-type:x mandatory}
-.species-card{scroll-snap-align:start;flex:0 0 auto;width:110px;display:grid;gap:6px;justify-items:center;padding:8px;border:1px solid #ddd;border-radius:12px;background:#fff;cursor:pointer}
-.species-card .thumb-wrapper{width:100%;aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#f5f5f5;display:grid;place-items:center}
-.species-card img{width:100%;height:100%;object-fit:cover}
-.species-card .label{font-size:.85rem}
-.species-card.selected{border-color:#4F46E5;box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+/* old carousel styles removed in favor of single-image preview */
 
 .hint{margin:6px 0 0 0;color:#666;font-size:.85rem}
 
@@ -35,5 +33,5 @@
 /* Larger screens: two rows remain but increase max preview size */
 @media (min-width: 768px){
 	.builder{padding:24px}
-	.preview img{max-width:420px}
+	.preview img{max-width:520px}
 }

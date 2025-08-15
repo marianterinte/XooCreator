@@ -9,14 +9,18 @@
     <div class="section-header">
       <h2 id="bp-section-title" data-testid="bp-title">Choose Body Part</h2>
     </div>
-    <div class="media-row">
-      <button type="button" class="nav-btn prev" data-testid="bp-prev" aria-label="Previous body part">←</button>
-      <figure class="preview">
-        <img data-testid="bp-image" src="/animalblueprint.png" alt="Body part preview over generic silhouette" />
-        <figcaption class="preview-caption" data-testid="bp-label">Head</figcaption>
-      </figure>
-      <button type="button" class="nav-btn next" data-testid="bp-next" aria-label="Next body part">→</button>
-    </div>
+
+    <!-- Single image with swipe to change body part -->
+  <figure class="preview"
+      (pointerdown)="onTopPointerDown($event)"
+      (pointermove)="onTopPointerMove($event)"
+      (pointerup)="onTopPointerUp($event)"
+      (pointercancel)="onTopPointerCancel($event)"
+      [style.transform]="topDragX() ? 'translateX(' + topDragX() + 'px)' : ''"
+      [class.dragging]="topDragging()">
+    <img data-testid="bp-image" [src]="currentPart().image" [alt]="currentPart().name + ' preview'" />
+      <figcaption class="preview-caption" data-testid="bp-label">{{ currentPart().name }}</figcaption>
+    </figure>
   </section>
 
   <!-- C. Panou Jos — Choose Animal -->
@@ -24,45 +28,17 @@
     <div class="section-header">
       <h2 id="sp-section-title" data-testid="sp-title">Choose Animal</h2>
     </div>
-    <div class="carousel-row">
-      <button type="button" class="nav-btn prev" data-testid="sp-prev" aria-label="Previous animals">←</button>
-      <div class="carousel" data-testid="sp-carousel" role="list">
-        <button type="button" class="species-card selected" data-testid="sp-card-lion" aria-pressed="true" role="listitem">
-          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Lion thumbnail" /></div>
-          <span class="label">Lion</span>
-        </button>
-        <button type="button" class="species-card" data-testid="sp-card-giraffe" role="listitem">
-          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Giraffe thumbnail" /></div>
-          <span class="label">Giraffe</span>
-        </button>
-        <button type="button" class="species-card" data-testid="sp-card-elephant" role="listitem">
-          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Elephant thumbnail" /></div>
-          <span class="label">Elephant</span>
-        </button>
-        <button type="button" class="species-card" data-testid="sp-card-fox" role="listitem">
-          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Fox thumbnail" /></div>
-          <span class="label">Fox</span>
-        </button>
-        <button type="button" class="species-card" data-testid="sp-card-rabbit" role="listitem">
-          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Rabbit thumbnail" /></div>
-          <span class="label">Rabbit</span>
-        </button>
-        <button type="button" class="species-card" data-testid="sp-card-monkey" role="listitem">
-          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Monkey thumbnail" /></div>
-          <span class="label">Monkey</span>
-        </button>
-        <button type="button" class="species-card" data-testid="sp-card-crocodile" role="listitem">
-          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Crocodile thumbnail" /></div>
-          <span class="label">Crocodile</span>
-        </button>
-        <button type="button" class="species-card" data-testid="sp-card-penguin" role="listitem">
-          <div class="thumb-wrapper"><img src="/animalblueprint.png" alt="Penguin thumbnail" /></div>
-          <span class="label">Penguin</span>
-        </button>
-      </div>
-      <button type="button" class="nav-btn next" data-testid="sp-next" aria-label="More animals">→</button>
-    </div>
-    <p class="hint">Tap an animal to apply to the selected body part</p>
+    <!-- Single image with swipe to change animal option for current part -->
+  <figure class="preview"
+      (pointerdown)="onBottomPointerDown($event)"
+      (pointermove)="onBottomPointerMove($event)"
+      (pointerup)="onBottomPointerUp($event)"
+      (pointercancel)="onBottomPointerCancel($event)"
+      [style.transform]="bottomDragX() ? 'translateX(' + bottomDragX() + 'px)' : ''"
+      [class.dragging]="bottomDragging()">
+    <img data-testid="sp-image" [src]="currentOption().src" [alt]="currentOption().label + ' thumbnail'" />
+      <figcaption class="preview-caption" data-testid="sp-label">{{ currentOption().label }}</figcaption>
+    </figure>
   </section>
 
   <!-- D. Acțiune jos — Generate -->

@@ -1,3 +1,6 @@
 .home{display:grid;gap:12px;place-items:start}
 .cta{display:inline-block;padding:10px 14px;border-radius:10px;background:#4F46E5;color:#fff;text-decoration:none}
 .cta:hover{background:#4338CA}
+.nav-meta{display:grid;gap:10px;margin-top:8px}
+.nav-meta .block h3{margin:8px 0 4px 0;font-size:1rem}
+.nav-meta a{color:#4F46E5;text-decoration:underline}
