@@ -19,7 +19,7 @@
     <a routerLink="/builder" class="cta">Începe să creezi</a>
   </header>
 
-  <h2 class="section-title">Galerie hibrizi</h2>
+  <h2 class="section-title">Creations</h2>
 
   <!-- Hybrids Showcase Card -->
   <section class="showcase" aria-label="Galerie hibrizi">
@@ -32,7 +32,96 @@
           <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
         }
       </div>
-      <div class="legend">Se schimbă la fiecare 2–3 secunde</div>
+      <div class="legend">Have yours!</div>
     </div>
+  </section>
+
+  <!-- Feature preview tiles -->
+  <section class="features" aria-label="Capabilități">
+    <article class="feature-card">
+      <h3>📖 Jurnalul Hibridului</h3>
+      <p>După generare, fiecare creatură primește un nume unic, o poveste de origine și o personalitate (ex: curajos, curios, timid). În curând: pagina „Jurnalul Meu” cu carduri pentru toate creațiile tale.</p>
+      <ul>
+        <li>Nume unic și avatar</li>
+        <li>Poveste scurtă + extensii</li>
+        <li>Personalitate aleatorie</li>
+      </ul>
+      <div class="status soon">În curând</div>
+    </article>
+    <article class="feature-card">
+      <h3>🚀 Progres & Level‑Up</h3>
+      <p>Crește nivelul hibrizilor tăi prin generare, mini‑jocuri și vizite zilnice. La fiecare level‑up deblochezi accesorii și pagini noi de poveste.</p>
+      <ul>
+        <li>XP din generări și mini‑jocuri</li>
+        <li>Accesorii vizuale</li>
+        <li>Paginare poveste</li>
+      </ul>
+      <div class="status soon">În curând</div>
+    </article>
+    <article class="feature-card">
+      <h3>🗺️ Harta Lumii Hibride</h3>
+      <p>Descoperă regiuni ca Pădurea Luminoasă, Savana Curcubeu, Tundra Fermecată și Insula Norilor. Creaturile apar pe hartă în funcție de combinație.</p>
+      <ul>
+        <li>Regiuni tematice</li>
+        <li>„Satul” tău crește</li>
+        <li>Interacțiuni pe hartă</li>
+      </ul>
+      <div class="status soon">În curând</div>
+    </article>
+    <article class="feature-card">
+      <h3>📚 Bestiar & Enciclopedie</h3>
+      <p>Colectează hibride, vezi raritatea (comun, rar, legendar) și progresul de descoperire. Siluete misterioase înainte de descoperire.</p>
+      <ul>
+        <li>Rarități și colecții</li>
+        <li>Procent de completare</li>
+        <li>Previzualizări misterioase</li>
+      </ul>
+      <div class="status soon">În curând</div>
+    </article>
+    <article class="feature-card">
+      <h3>🌙 Povești Episodice</h3>
+      <p>Misiuni în timp real: „Revino peste 2 ore…” și descoperă imagini + mini‑povești noi. Generare dinamică pentru fiecare hibrid.</p>
+      <ul>
+        <li>Misiuni programate</li>
+        <li>Conținut episodic</li>
+        <li>Surprize la revenire</li>
+      </ul>
+      <div class="status soon">În curând</div>
+    </article>
+  </section>
+
+  <!-- Extra scrollable content (Coming Soon) -->
+  <section class="coming-panels" aria-label="În curând">
+    <article class="panel map">
+      <div class="panel-header">
+        <h3>🗺️ Harta Animalelor</h3>
+        <span class="badge soon">În curând</span>
+      </div>
+      <p>Descoperă Pădurea Luminoasă, Savana Curcubeu, Tundra Fermecată și Insula Norilor. Creaturile tale vor apărea pe hartă și vor popula lumea.</p>
+      <ul class="tags">
+        <li>Pădurea Luminoasă</li>
+        <li>Savana Curcubeu</li>
+        <li>Tundra Fermecată</li>
+        <li>Insula Norilor</li>
+      </ul>
+      <div class="panel-visual map-visual" aria-hidden="true"></div>
+    </article>
+
+    <article class="panel level">
+      <div class="panel-header">
+        <h3>🚀 Level‑Up & Progres</h3>
+        <span class="badge soon">În curând</span>
+      </div>
+      <p>Crește nivelul hibrizilor prin generare, mini‑jocuri și vizite zilnice. Deblochează accesorii și pagini noi de poveste la fiecare nivel.</p>
+      <div class="progress-mock" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
+        <div class="fill" style="width:65%"></div>
+      </div>
+      <div class="badge-row">
+        <span class="b">🎖️</span>
+        <span class="b">🧢</span>
+        <span class="b">🌸</span>
+        <span class="b">🧣</span>
+      </div>
+    </article>
   </section>
 </section>

@@ -39,3 +39,19 @@
 	.hero{padding:42px 24px}
 	.hero h1{font-size:2.6rem}
 }
+
+/* Features */
+.features{display:grid;gap:12px;padding:8px 16px 24px}
+.feature-card{border-radius:14px;padding:12px;background:
+	radial-gradient(ellipse at -10% 10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
+	radial-gradient(ellipse at 120% -10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
+	linear-gradient(135deg,#fde68a,#e9d5ff,#bfdbfe,#bbf7d0);background-size:auto,auto,300% 300%;box-shadow:0 10px 28px rgba(0,0,0,.12)}
+.feature-card h3{margin:0 0 6px 0}
+.feature-card p{margin:0 0 6px 0;color:#374151}
+.feature-card ul{margin:0 0 6px 16px}
+.feature-card .status{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.85rem}
+.feature-card .status.soon{background:#111;color:#fff}
+
+@media (min-width: 768px){
+	.features{grid-template-columns:repeat(2, minmax(0,1fr));gap:16px}
+}
