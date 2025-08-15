@@ -47,6 +47,7 @@ export class CreatureBuilderComponent {
   protected assignments = signal<Record<PartKey, number>>({ head: 0, body: 0, arms: 0, legs: 0, tail: 0 });
   protected showConfirm = signal(false);
   protected showExitConfirm = signal(false);
+  protected showHelp = signal(false);
 
   // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
@@ -78,6 +79,12 @@ export class CreatureBuilderComponent {
       this.syncActiveAnimalToCurrentPart();
       this.persist();
     }
+
+    // Tutorial popup on first visit
+    try {
+      const seen = localStorage.getItem('xoo.tutorial.seen.v1');
+      if (!seen) this.showHelp.set(true);
+    } catch { /* ignore */ }
   }
 
   private persist() {
@@ -241,5 +248,12 @@ export class CreatureBuilderComponent {
 
   goToUnlock() {
     this.router.navigateByUrl('/unlock');
+  }
+
+  // Help modal
+  openHelp(){ this.showHelp.set(true); }
+  closeHelp(){
+    try { localStorage.setItem('xoo.tutorial.seen.v1', '1'); } catch { /* ignore */ }
+    this.showHelp.set(false);
   }
 }
