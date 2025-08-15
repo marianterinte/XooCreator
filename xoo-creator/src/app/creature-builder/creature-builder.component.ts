@@ -1,66 +1,45 @@
 import { Component, computed, signal } from '@angular/core';
+import { NgFor } from '@angular/common';
 
 // Types
 type PartKey = 'head' | 'body' | 'arms' | 'legs' | 'tail';
 type PartDef = { key: PartKey; name: string; image: string };
-type PartOption = { src: string; label: string };
+type AnimalOption = { src: string; label: string };
 
 @Component({
   selector: 'app-creature-builder',
   standalone: true,
+  imports: [NgFor],
   templateUrl: './creature-builder.component.html',
   styleUrl: './creature-builder.component.css'
 })
 export class CreatureBuilderComponent {
 
-  // Body parts order and mapping to a representative image
-  private readonly parts: ReadonlyArray<PartDef> = [
-    { key: 'head', name: 'Head', image: '/images/face.webp' },
-    { key: 'body', name: 'Body', image: '/images/body.webp' },
-    { key: 'arms', name: 'Arms', image: '/images/hand1.webp' },
-    { key: 'legs', name: 'Legs', image: '/images/foot.webp' },
-    { key: 'tail', name: 'Tail', image: '/images/tail.webp' },
+  // Body parts order and mapping to representative images (cleaned to existing files)
+  protected readonly parts: ReadonlyArray<PartDef> = [
+    { key: 'head', name: 'Head', image: '/images/bodyparts/face.webp' },
+    { key: 'body', name: 'Body', image: '/images/bodyparts/body.webp' },
+    { key: 'arms', name: 'Arms', image: '/images/bodyparts/hand.webp' },
+    { key: 'legs', name: 'Legs', image: '/images/bodyparts/foot.webp' },
+    { key: 'tail', name: 'Tail', image: '/images/bodyparts/tail.webp' },
   ] as const;
 
-  // Options per body part (acts as species placeholders for now)
-  private readonly options: Record<PartKey, PartOption[]> = {
-    head: [
-      { src: '/images/face.webp', label: 'Face' },
-    ],
-    body: [
-      { src: '/images/body.webp', label: 'Body' },
-    ],
-    arms: [
-      { src: '/images/hand1.webp', label: 'Arms Option 1' },
-      { src: '/images/hand2.webp', label: 'Arms Option 2' },
-    ],
-    legs: [
-      { src: '/images/foot.webp', label: 'Legs Option 1' },
-      { src: '/images/foot2.webp', label: 'Legs Option 2' },
-    ],
-    tail: [
-      { src: '/images/tail.webp', label: 'Tail Option 1' },
-      { src: '/images/tail2.webp', label: 'Tail Option 2' },
-    ],
-  };
+  // Animal options (thumbnails + big image)
+  protected readonly animals: ReadonlyArray<AnimalOption> = [
+    { src: '/images/animals/fox.png', label: 'Fox' },
+    { src: '/images/animals/lion.png', label: 'Lion' },
+    { src: '/images/animals/squirel.jpg', label: 'Squirrel' },
+  ] as const;
 
   // Index state
   protected activePartIdx = signal(0);
-  protected optionIndexByPart = signal<Record<PartKey, number>>(
-    this.parts.reduce((acc, p) => { acc[p.key] = 0; return acc; }, {} as Record<PartKey, number>)
-  );
+  protected activeAnimalIdx = signal(0);
 
-  // Derived current part and option
+  // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
-  protected currentOptions = computed(() => this.options[this.currentPart().key]);
-  protected currentOption = computed(() => {
-    const key = this.currentPart().key;
-    const idx = this.optionIndexByPart()[key] ?? 0;
-    const list = this.currentOptions();
-    return list[(idx + list.length) % list.length];
-  });
+  protected currentAnimal = computed(() => this.animals[(this.activeAnimalIdx() + this.animals.length) % this.animals.length]);
 
-  // Pointer swipe handling (top and bottom panels)
+  // Pointer swipe handling (top=parts, bottom=animals)
   private topStartX: number | null = null;
   private bottomStartX: number | null = null;
   protected topDragX = signal(0);
@@ -86,7 +65,7 @@ export class CreatureBuilderComponent {
   if (this.topStartX == null) return;
     const dx = ev.clientX - this.topStartX;
     this.topStartX = null;
-    const threshold = 60; // px
+  const threshold = 60; // px
     if (dx > threshold) {
       this.prevPart();
     } else if (dx < -threshold) {
@@ -123,9 +102,9 @@ export class CreatureBuilderComponent {
     this.bottomStartX = null;
     const threshold = 60;
     if (dx > threshold) {
-      this.prevOption();
+      this.prevAnimal();
     } else if (dx < -threshold) {
-      this.nextOption();
+      this.nextAnimal();
     }
     this.bottomDragX.set(0);
     this.bottomDragging.set(false);
@@ -138,6 +117,15 @@ export class CreatureBuilderComponent {
     this.bottomDragging.set(false);
   }
 
+  selectPart(index: number) {
+    const i = (index + this.parts.length) % this.parts.length;
+    this.activePartIdx.set(i);
+  }
+  selectAnimal(index: number) {
+    const i = (index + this.animals.length) % this.animals.length;
+    this.activeAnimalIdx.set(i);
+  }
+
   private nextPart() {
     const next = (this.activePartIdx() + 1) % this.parts.length;
     this.activePartIdx.set(next);
@@ -146,17 +134,12 @@ export class CreatureBuilderComponent {
     const prev = (this.activePartIdx() - 1 + this.parts.length) % this.parts.length;
     this.activePartIdx.set(prev);
   }
-  private nextOption() {
-    const key = this.currentPart().key;
-    const list = this.options[key];
-    const idx = (this.optionIndexByPart()[key] ?? 0) + 1;
-    this.optionIndexByPart.update(m => ({...m, [key]: idx % list.length}));
+  private nextAnimal() {
+    const next = (this.activeAnimalIdx() + 1) % this.animals.length;
+    this.activeAnimalIdx.set(next);
   }
-  private prevOption() {
-    const key = this.currentPart().key;
-    const list = this.options[key];
-    const len = list.length;
-    const idx = (this.optionIndexByPart()[key] ?? 0) - 1;
-    this.optionIndexByPart.update(m => ({...m, [key]: (idx + len) % len}));
+  private prevAnimal() {
+    const prev = (this.activeAnimalIdx() - 1 + this.animals.length) % this.animals.length;
+    this.activeAnimalIdx.set(prev);
   }
 }

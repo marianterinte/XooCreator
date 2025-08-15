@@ -4,41 +4,56 @@
     <h1 id="page-title">Create Your Friend</h1>
   </header>
 
-  <!-- B. Panou Sus — Choose Body Part -->
+  <!-- B. Panou Sus — Body Parts: carousel (thumbnails) + big image -->
   <section class="panel panel-top" aria-labelledby="bp-section-title">
-    <div class="section-header">
-      <h2 id="bp-section-title" data-testid="bp-title">Choose Body Part</h2>
+    <div class="carousel thumbs" role="listbox" aria-label="Body parts">
+      <button
+        *ngFor="let p of parts; let i = index"
+        class="thumb" [class.active]="i === activePartIdx()"
+        type="button" role="option" [attr.aria-selected]="i === activePartIdx()"
+        (click)="selectPart(i)">
+        <img [src]="p.image" [alt]="p.name" />
+      </button>
     </div>
 
-    <!-- Single image with swipe to change body part -->
-  <figure class="preview"
+    <figure class="preview"
       (pointerdown)="onTopPointerDown($event)"
       (pointermove)="onTopPointerMove($event)"
       (pointerup)="onTopPointerUp($event)"
       (pointercancel)="onTopPointerCancel($event)"
       [style.transform]="topDragX() ? 'translateX(' + topDragX() + 'px)' : ''"
       [class.dragging]="topDragging()">
-    <img data-testid="bp-image" [src]="currentPart().image" [alt]="currentPart().name + ' preview'" />
+      <img data-testid="bp-image" [src]="currentPart().image" [alt]="currentPart().name + ' preview'" />
       <figcaption class="preview-caption" data-testid="bp-label">{{ currentPart().name }}</figcaption>
     </figure>
   </section>
 
-  <!-- C. Panou Jos — Choose Animal -->
+  <!-- C. Panou Jos — Animals: big image + carousel (thumbnails) -->
   <section class="panel panel-bottom" aria-labelledby="sp-section-title">
     <div class="section-header">
       <h2 id="sp-section-title" data-testid="sp-title">Choose Animal</h2>
     </div>
-    <!-- Single image with swipe to change animal option for current part -->
-  <figure class="preview"
+
+    <figure class="preview"
       (pointerdown)="onBottomPointerDown($event)"
       (pointermove)="onBottomPointerMove($event)"
       (pointerup)="onBottomPointerUp($event)"
       (pointercancel)="onBottomPointerCancel($event)"
       [style.transform]="bottomDragX() ? 'translateX(' + bottomDragX() + 'px)' : ''"
       [class.dragging]="bottomDragging()">
-    <img data-testid="sp-image" [src]="currentOption().src" [alt]="currentOption().label + ' thumbnail'" />
-      <figcaption class="preview-caption" data-testid="sp-label">{{ currentOption().label }}</figcaption>
+      <img data-testid="animal-image" [src]="currentAnimal().src" [alt]="currentAnimal().label + ' image'" />
+      <figcaption class="preview-caption" data-testid="animal-label">{{ currentAnimal().label }}</figcaption>
     </figure>
+
+    <div class="carousel thumbs" role="listbox" aria-label="Animals">
+      <button
+        *ngFor="let a of animals; let i = index"
+        class="thumb" [class.active]="i === activeAnimalIdx()"
+        type="button" role="option" [attr.aria-selected]="i === activeAnimalIdx()"
+        (click)="selectAnimal(i)">
+        <img [src]="a.src" [alt]="a.label" />
+      </button>
+    </div>
   </section>
 
   <!-- D. Acțiune jos — Generate -->

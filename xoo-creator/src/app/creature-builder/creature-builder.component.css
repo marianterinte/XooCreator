@@ -18,10 +18,15 @@
 .preview{margin:0;display:grid;gap:6px;justify-items:center;touch-action:pan-y}
 .preview.dragging{transition:none}
 .preview img{width:100%;max-width:520px;aspect-ratio:9/16;object-fit:contain;border-radius:12px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.05);user-select:none;-webkit-user-drag:none;pointer-events:none}
+
 .preview-caption{font-size:.9rem;color:#666}
 
-/* Carousel (bottom panel) */
-/* old carousel styles removed in favor of single-image preview */
+/* Thumb carousels */
+.carousel.thumbs{display:flex;gap:8px;overflow:auto;padding:4px 2px}
+.carousel.thumbs::-webkit-scrollbar{height:6px}
+.thumb{flex:0 0 auto;border:none;background:transparent;padding:0;cursor:pointer;position:relative}
+.thumb img{width:56px;height:56px;object-fit:contain;border-radius:8px;border:1px solid #ddd;background:#fff;padding:4px}
+.thumb.active img{outline:2px solid #4F46E5;box-shadow:0 0 0 3px rgba(79,70,229,.12)}
 
 .hint{margin:6px 0 0 0;color:#666;font-size:.85rem}
 
