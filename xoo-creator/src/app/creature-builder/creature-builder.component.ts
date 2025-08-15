@@ -34,15 +34,22 @@ export class CreatureBuilderComponent {
   { key: 'horns', name: 'Horns', image: '/images/bodyparts/horns.webp' },
   ] as const;
 
-  // Animal options (thumbnails + big image)
+  // Animal options (thumbnails + big image) from /images/animals/base
   protected readonly animals: ReadonlyArray<AnimalOption> = [
-  { src: '/images/animals/bunny.jpg',   label: 'Bunny',   supports: S([...BASE_PARTS]) },
-  { src: '/images/animals/cat.jpg',     label: 'Cat',     supports: S([...BASE_PARTS]) },
-  { src: '/images/animals/giraffe.jpg', label: 'Giraffe', supports: S([...BASE_PARTS, 'horn', 'horns']) },
-  { src: '/images/animals/dog.jpg',     label: 'Dog',     supports: S([...BASE_PARTS]) },
-  { src: '/images/animals/fox.jpg',     label: 'Fox',     supports: S([...BASE_PARTS, 'wings']) },
-  { src: '/images/animals/hippo.jpg',   label: 'Hippo',   supports: S([...BASE_PARTS]) },
-  { src: '/images/animals/monkey.jpg',  label: 'Monkey',  supports: S([...BASE_PARTS, 'wings']) },
+    { src: '/images/animals/base/bunny.jpg',   label: 'Bunny',    supports: S([...BASE_PARTS]) },
+    { src: '/images/animals/base/cat.jpg',     label: 'Cat',      supports: S([...BASE_PARTS]) },
+    { src: '/images/animals/base/giraffe.jpg', label: 'Giraffe',  supports: S([...BASE_PARTS, 'horn', 'horns']) }, // keep third
+    { src: '/images/animals/base/dog.jpg',     label: 'Dog',      supports: S([...BASE_PARTS]) },
+    { src: '/images/animals/base/fox.jpg',     label: 'Fox',      supports: S([...BASE_PARTS]) },
+    { src: '/images/animals/base/hippo.jpg',   label: 'Hippo',    supports: S([...BASE_PARTS]) },
+    { src: '/images/animals/base/monkey.jpg',  label: 'Monkey',   supports: S([...BASE_PARTS]) },
+    { src: '/images/animals/base/camel.jpg',   label: 'Camel',    supports: S([...BASE_PARTS]) },
+    { src: '/images/animals/base/deer.jpg',    label: 'Deer',     supports: S([...BASE_PARTS, 'horn', 'horns']) },
+    { src: '/images/animals/base/duck.jpg',    label: 'Duck',     supports: S([...BASE_PARTS, 'wings']) },
+    { src: '/images/animals/base/eagle.jpg',   label: 'Eagle',    supports: S([...BASE_PARTS, 'wings']) },
+    { src: '/images/animals/base/elephant.jpg',label: 'Elephant', supports: S([...BASE_PARTS]) },
+    { src: '/images/animals/base/ostrich.jpg', label: 'Ostrich',  supports: S([...BASE_PARTS, 'wings']) },
+    { src: '/images/animals/base/parrot.jpg',  label: 'Parrot',   supports: S([...BASE_PARTS, 'wings']) },
   ] as const;
 
   // Lock rules: last 2 body parts locked; only first 3 animals unlocked
