@@ -20,7 +20,7 @@
       </button>
     </div>
 
-  <figure class="preview"
+    <figure class="preview" [class.locked]="isPartLocked(currentPart().key)"
       (pointerdown)="onTopPointerDown($event)"
       (pointermove)="onTopPointerMove($event)"
       (pointerup)="onTopPointerUp($event)"
@@ -28,13 +28,14 @@
       [style.transform]="topDragX() ? 'translateX(' + topDragX() + 'px)' : ''"
       [class.dragging]="topDragging()">
   <img data-testid="bp-image" [src]="currentPart().image" [alt]="currentPart().name + ' preview'" />
+      <div class="lock-overlay" *ngIf="isPartLocked(currentPart().key)" aria-hidden="true">🔒</div>
       <figcaption class="preview-caption" data-testid="bp-label">{{ currentPart().name }}</figcaption>
     </figure>
   </section>
 
   <!-- C. Panou Jos — Animals: big image + carousel (thumbnails) -->
   <section class="panel panel-bottom" aria-labelledby="sp-section-title">
-    <figure class="preview"
+    <figure class="preview" [class.locked]="isAnimalLocked(activeAnimalIdx())"
       (pointerdown)="onBottomPointerDown($event)"
       (pointermove)="onBottomPointerMove($event)"
       (pointerup)="onBottomPointerUp($event)"
@@ -42,6 +43,7 @@
       [style.transform]="bottomDragX() ? 'translateX(' + bottomDragX() + 'px)' : ''"
       [class.dragging]="bottomDragging()">
       <img data-testid="animal-image" [src]="currentAnimal().src" [alt]="currentAnimal().label + ' image'" />
+      <div class="lock-overlay" *ngIf="isAnimalLocked(activeAnimalIdx())" aria-hidden="true">🔒</div>
       <figcaption class="preview-caption" data-testid="animal-label">{{ currentAnimal().label }}</figcaption>
     </figure>
 
