@@ -137,6 +137,7 @@
         <!-- Back reveals name and story -->
         <div class="card-face back">
           <div class="details">
+            <img class="res-thumb" [src]="resultImage()" [alt]="resultName()" />
             <h4 class="res-name">{{ resultName() }}</h4>
             <p class="res-story">{{ resultStory() }}</p>
           </div>
