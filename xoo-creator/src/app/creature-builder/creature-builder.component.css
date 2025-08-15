@@ -40,7 +40,7 @@
 .preview-caption{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.5);color:#fff;font-size:.85rem;padding:4px 8px;border-radius:999px}
 
 /* Thumb carousels */
-.carousel.thumbs{display:flex;gap:8px;overflow:auto;padding:8px 8px;height:var(--carouselH)}
+.carousel.thumbs{display:flex;gap:8px;overflow:auto;padding:8px;height:var(--carouselH)}
 .carousel.thumbs::-webkit-scrollbar{height:6px}
 .thumb{flex:0 0 auto;border:none;background:transparent;padding:0;cursor:pointer;position:relative}
 .thumb img{width:68px;height:68px;object-fit:cover;border-radius:10px;border:1px solid #ddd;background:#fff}
@@ -49,7 +49,7 @@
 .hint{margin:6px 0 0 0;color:#666;font-size:.85rem}
 
 /* Action bar */
-.action-bar{position:fixed;left:0;right:0;bottom:0;padding:8px clamp(8px, env(safe-area-inset-left), 16px) calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg, rgba(255,255,255,0), #fff 30%)}
+.action-bar{position:fixed;left:0;right:0;bottom:0;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg, rgba(255,255,255,0), #fff 30%)}
 .btn-generate{width:min(640px, 92vw);min-height:48px;border:none;border-radius:12px;background:#4F46E5;color:#fff;font-size:1rem;cursor:pointer;display:block;margin:0 auto}
 .btn-generate:hover{background:#4338CA}
 

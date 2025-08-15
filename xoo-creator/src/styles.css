@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global reset for a mobile-like, no-scroll shell */
+*{box-sizing:border-box}
+html,body{height:100%;}
+html,body{margin:0;padding:0;overflow:hidden;background:#fff;-webkit-tap-highlight-color:transparent}
+#app-root, app-root{display:block;height:100%;}
+
+/* Prevent accidental image drag/selection */
+img{user-select:none;-webkit-user-drag:none}
