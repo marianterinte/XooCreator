@@ -1,6 +1,9 @@
 <section class="builder" aria-labelledby="page-title">
   <!-- A. Header -->
   <header class="page-header">
+    <button class="btn-back" type="button" aria-label="Înapoi" (click)="openExitConfirm()">
+      ← Back
+    </button>
   </header>
 
   <!-- B. Panou Sus — Body Parts: carousel (thumbnails) + big image -->
@@ -70,6 +73,16 @@
     <div class="actions">
       <button type="button" class="btn secondary" (click)="cancelGenerate()">Renunță</button>
       <button type="button" class="btn primary" (click)="proceedGenerate()">Generează</button>
+    </div>
+  </dialog>
+
+  <!-- Exit Confirmation Modal -->
+  <dialog class="confirm-modal" [open]="showExitConfirm()" aria-labelledby="exit-title" aria-modal="true">
+    <h3 id="exit-title">Renunți la modificări?</h3>
+    <p style="margin:8px 0 0 0;color:#444">Schimbările curente nu vor fi păstrate.</p>
+    <div class="actions">
+      <button type="button" class="btn secondary" (click)="cancelExit()">Rămân</button>
+      <button type="button" class="btn primary" (click)="proceedExit()">Da, ieși</button>
     </div>
   </dialog>
 </section>

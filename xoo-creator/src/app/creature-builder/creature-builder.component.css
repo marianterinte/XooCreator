@@ -15,7 +15,9 @@
 	grid-template-rows: var(--headerH) auto auto auto auto; /* header, top carousel, top preview, bottom preview, bottom carousel */
 	overflow:hidden;
 }
-.page-header{display:grid;place-items:center}
+.page-header{display:flex;align-items:center;justify-content:flex-start;padding:6px 8px}
+.btn-back{appearance:none;border:none;background:#f3f4f6;border-radius:10px;padding:8px 12px;font-size:.95rem;cursor:pointer}
+.btn-back:active{transform:translateY(1px)}
 .page-header h1{margin:0;text-align:center;font-size:1.05rem}
 
 /* Panels */

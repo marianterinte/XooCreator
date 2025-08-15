@@ -1,6 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { PersistenceService, BuilderConfig } from '../services/persistence.service';
+import { Router } from '@angular/router';
 
 // Types
 type PartKey = 'head' | 'body' | 'arms' | 'legs' | 'tail';
@@ -37,12 +38,13 @@ export class CreatureBuilderComponent {
   protected activeAnimalIdx = signal(0);
   protected assignments = signal<Record<PartKey, number>>({ head: 0, body: 0, arms: 0, legs: 0, tail: 0 });
   protected showConfirm = signal(false);
+  protected showExitConfirm = signal(false);
 
   // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
   protected currentAnimal = computed(() => this.animals[(this.activeAnimalIdx() + this.animals.length) % this.animals.length]);
 
-  constructor(private readonly store: PersistenceService) {
+  constructor(private readonly store: PersistenceService, private readonly router: Router) {
     // Load config or randomize on first visit
     const cfg = this.store.load();
     if (cfg?.assignments) {
@@ -211,5 +213,14 @@ export class CreatureBuilderComponent {
   proceedGenerate() {
     // For now, just close the modal; hook real generation later
     this.showConfirm.set(false);
+  }
+
+  // Exit/back flow
+  openExitConfirm() { this.showExitConfirm.set(true); }
+  cancelExit() { this.showExitConfirm.set(false); }
+  async proceedExit() {
+    this.store.clear();
+    this.showExitConfirm.set(false);
+    await this.router.navigateByUrl('/');
   }
 }
