@@ -1,5 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgFor } from '@angular/common';
+import { PersistenceService, BuilderConfig } from '../services/persistence.service';
 
 // Types
 type PartKey = 'head' | 'body' | 'arms' | 'legs' | 'tail';
@@ -34,10 +35,55 @@ export class CreatureBuilderComponent {
   // Index state
   protected activePartIdx = signal(0);
   protected activeAnimalIdx = signal(0);
+  protected assignments = signal<Record<PartKey, number>>({ head: 0, body: 0, arms: 0, legs: 0, tail: 0 });
+  protected showConfirm = signal(false);
 
   // Derived current entities
   protected currentPart = computed(() => this.parts[this.activePartIdx()]);
   protected currentAnimal = computed(() => this.animals[(this.activeAnimalIdx() + this.animals.length) % this.animals.length]);
+
+  constructor(private readonly store: PersistenceService) {
+    // Load config or randomize on first visit
+    const cfg = this.store.load();
+    if (cfg?.assignments) {
+      // Map unknown keys defensively
+      const m: Record<PartKey, number> = { head: 0, body: 0, arms: 0, legs: 0, tail: 0 };
+      for (const p of this.parts) {
+        const n = cfg.assignments[p.key] ?? Math.floor(Math.random() * this.animals.length);
+        m[p.key] = this.clampAnimalIndex(n);
+      }
+      this.assignments.set(m);
+      if (cfg.activePartKey) {
+        const idx = this.parts.findIndex(p => p.key === cfg.activePartKey);
+        if (idx >= 0) this.activePartIdx.set(idx);
+      }
+      // active animal mirrors assignment of current part
+      this.syncActiveAnimalToCurrentPart();
+    } else {
+      // Randomize each part once
+      const m: Record<PartKey, number> = { head: 0, body: 0, arms: 0, legs: 0, tail: 0 };
+      for (const p of this.parts) m[p.key] = this.randAnimalIndex();
+      this.assignments.set(m);
+      this.syncActiveAnimalToCurrentPart();
+      this.persist();
+    }
+  }
+
+  private persist() {
+    const cfg: BuilderConfig = {
+      assignments: { ...this.assignments() },
+      activePartKey: this.currentPart().key,
+      updatedAt: Date.now(),
+    };
+    this.store.save(cfg);
+  }
+
+  private randAnimalIndex() { return Math.floor(Math.random() * this.animals.length); }
+  private clampAnimalIndex(i: number) { const n = this.animals.length; return ((i % n) + n) % n; }
+  private syncActiveAnimalToCurrentPart() {
+    const idx = this.assignments()[this.currentPart().key] ?? 0;
+    this.activeAnimalIdx.set(this.clampAnimalIndex(idx));
+  }
 
   // Pointer swipe handling (top=parts, bottom=animals)
   private topStartX: number | null = null;
@@ -120,26 +166,50 @@ export class CreatureBuilderComponent {
   selectPart(index: number) {
     const i = (index + this.parts.length) % this.parts.length;
     this.activePartIdx.set(i);
+  this.syncActiveAnimalToCurrentPart();
+  this.persist();
   }
   selectAnimal(index: number) {
     const i = (index + this.animals.length) % this.animals.length;
     this.activeAnimalIdx.set(i);
+  // Update assignment for current part
+  const key = this.currentPart().key;
+  this.assignments.update(m => ({ ...m, [key]: i }));
+  this.persist();
   }
 
   private nextPart() {
     const next = (this.activePartIdx() + 1) % this.parts.length;
     this.activePartIdx.set(next);
+    this.syncActiveAnimalToCurrentPart();
+    this.persist();
   }
   private prevPart() {
     const prev = (this.activePartIdx() - 1 + this.parts.length) % this.parts.length;
     this.activePartIdx.set(prev);
+    this.syncActiveAnimalToCurrentPart();
+    this.persist();
   }
   private nextAnimal() {
     const next = (this.activeAnimalIdx() + 1) % this.animals.length;
     this.activeAnimalIdx.set(next);
+    const key = this.currentPart().key;
+    this.assignments.update(m => ({ ...m, [key]: next }));
+    this.persist();
   }
   private prevAnimal() {
     const prev = (this.activeAnimalIdx() - 1 + this.animals.length) % this.animals.length;
     this.activeAnimalIdx.set(prev);
+    const key = this.currentPart().key;
+    this.assignments.update(m => ({ ...m, [key]: prev }));
+    this.persist();
+  }
+
+  // Modal actions
+  confirmGenerate() { this.showConfirm.set(true); }
+  cancelGenerate() { this.showConfirm.set(false); }
+  proceedGenerate() {
+    // For now, just close the modal; hook real generation later
+    this.showConfirm.set(false);
   }
 }

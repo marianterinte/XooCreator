@@ -58,6 +58,23 @@
 
   <!-- D. Acțiune jos — Generate -->
   <div class="action-bar">
-    <button type="button" class="btn-generate" data-testid="btn-generate" aria-label="Generate creature">Generate</button>
+    <button type="button" class="btn-generate" data-testid="btn-generate" aria-label="Generate creature" (click)="confirmGenerate()">Generate</button>
   </div>
+
+  <!-- Confirmation Modal -->
+  <dialog class="confirm-modal" [open]="showConfirm()" aria-labelledby="confirm-title" aria-modal="true">
+    <h3 id="confirm-title">Ai ales această configurație. Generăm?</h3>
+    <div class="summary">
+      <ul>
+        <li *ngFor="let p of parts">
+          <strong>{{ p.name }}:</strong>
+          {{ animals[assignments()[p.key]].label }}
+        </li>
+      </ul>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn secondary" (click)="cancelGenerate()">Renunță</button>
+      <button type="button" class="btn primary" (click)="proceedGenerate()">Generează</button>
+    </div>
+  </dialog>
 </section>
