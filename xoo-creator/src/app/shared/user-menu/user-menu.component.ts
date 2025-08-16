@@ -15,7 +15,7 @@ export class UserMenuComponent {
   @Output() profile = new EventEmitter<void>();
   @Output() help = new EventEmitter<void>();
   @Output() settings = new EventEmitter<void>();
-  @Output() iot = new EventEmitter<void>();
+  @Output() imaginationTree = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
 
   open = false;

@@ -343,7 +343,7 @@ export class CreatureBuilderComponent {
   // User menu handlers (simple placeholders; adjust routes as available)
   goToProfile() { this.router.navigateByUrl('/profile'); }
   goToSettings() { this.router.navigateByUrl('/settings'); }
-  goToIOT() { this.router.navigateByUrl('/iot'); }
+  goToImaginationTree() { this.router.navigateByUrl('/imagination-tree'); }
   logout() { /* TODO: hook into auth service if available */ this.router.navigateByUrl('/'); }
 
   // Help modal
