@@ -1,5 +1,5 @@
 import { Component, computed, signal } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { PersistenceService } from '../services/persistence.service';
 import { CreditsService } from '../services/credits.service';
 import { PartKey, PartDef, AnimalOption, BASE_PARTS } from './builder-types';
@@ -12,12 +12,13 @@ import { BuilderStateService } from './builder-state.service';
 import { ConfirmGenerateModalComponent } from './modals/confirm-generate.modal';
 import { HelpModalComponent } from './modals/help.modal';
 import { ResultModalComponent } from './modals/result.modal';
+import { UserMenuComponent } from '../shared/user-menu/user-menu.component';
 
 
 @Component({
   selector: 'app-creature-builder',
   standalone: true,
-  imports: [NgFor, NgIf, SwipeXDirective, ConfirmGenerateModalComponent, HelpModalComponent, ResultModalComponent],
+  imports: [NgIf, SwipeXDirective, ConfirmGenerateModalComponent, HelpModalComponent, ResultModalComponent, UserMenuComponent],
   templateUrl: './creature-builder.component.html',
   styleUrl: './creature-builder.component.css'
 })
@@ -338,6 +339,12 @@ export class CreatureBuilderComponent {
   goToUnlock() {
     this.router.navigateByUrl('/unlock');
   }
+
+  // User menu handlers (simple placeholders; adjust routes as available)
+  goToProfile() { this.router.navigateByUrl('/profile'); }
+  goToSettings() { this.router.navigateByUrl('/settings'); }
+  goToIOT() { this.router.navigateByUrl('/iot'); }
+  logout() { /* TODO: hook into auth service if available */ this.router.navigateByUrl('/'); }
 
   // Help modal
   openHelp(){ this.showHelp.set(true); }

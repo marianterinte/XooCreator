@@ -5,7 +5,14 @@
     <div class="spacer"></div>
     <div class="credits">{{ creditsLeft }} credits</div>
     <div class="spacer"></div>
-    <button class="btn-icon help" type="button" aria-label="Ajutor" (click)="openHelp()">?</button>
+    <user-menu
+      [userName]="'Guest'"
+      (help)="openHelp()"
+      (profile)="goToProfile()"
+      (settings)="goToSettings()"
+      (iot)="goToIOT()"
+      (logout)="logout()"
+    />
   </header>
 
   <!-- B. Panou Sus — Body Parts: carousel (thumbnails) + big image -->

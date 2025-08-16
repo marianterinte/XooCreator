@@ -1,0 +1,27 @@
+<div class="menu-wrap">
+  <button class="menu-btn" type="button" (click)="toggle($event)" aria-haspopup="menu" aria-expanded="open">
+    <img *ngIf="avatarUrl; else initials" [src]="avatarUrl" alt="avatar" />
+    <ng-template #initials>
+  <span class="avatar-fallback">{{ userName[0] || 'U' }}</span>
+    </ng-template>
+  </button>
+
+  <div class="dropdown" *ngIf="open" role="menu">
+    <div class="user-row">
+      <div class="avatar small">
+        <img *ngIf="avatarUrl; else init2" [src]="avatarUrl" alt="avatar" />
+  <ng-template #init2><span class="avatar-fallback">{{ userName[0] || 'U' }}</span></ng-template>
+      </div>
+      <div class="user-info">
+        <div class="name">{{ userName }}</div>
+        <div class="hint">NEW Set a cover image</div>
+      </div>
+    </div>
+    <hr />
+    <button role="menuitem" (click)="profile.emit()"><span class="icon">👤</span> View Profile</button>
+    <button role="menuitem" (click)="settings.emit()"><span class="icon">⚙️</span> Account Settings</button>
+    <button role="menuitem" (click)="help.emit()"><span class="icon">❓</span> Help</button>
+    <button role="menuitem" (click)="iot.emit()"><span class="icon">🌳</span> IOT (Imagination Tree)</button>
+    <button role="menuitem" (click)="logout.emit()"><span class="icon">↩</span> Logout</button>
+  </div>
+</div>
