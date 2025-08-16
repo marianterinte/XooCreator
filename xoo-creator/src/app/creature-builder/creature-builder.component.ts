@@ -4,6 +4,7 @@ import { PersistenceService, BuilderConfig } from '../services/persistence.servi
 import { CreditsService } from '../services/credits.service';
 import { PartKey, PartDef, AnimalOption, BASE_PARTS } from './builder-types';
 import { PARTS, ANIMALS, BASE_UNLOCKED_ANIMAL_COUNT, BASE_LOCKED_PARTS } from './builder-data';
+import { GenerateSelectionService } from './generate-selection.service';
 import { Router } from '@angular/router';
 import { GenerationFlowService } from './generation-flow.service';
 
@@ -81,13 +82,14 @@ export class CreatureBuilderComponent {
     private readonly router: Router,
     private readonly credits: CreditsService,
     private readonly genFlow: GenerationFlowService,
+    private readonly genSel: GenerateSelectionService,
   ) {
     // Load config or randomize on first visit
     const cfg = this.store.load();
     if (cfg?.assignments) {
       // Map unknown keys defensively
       const m: Record<PartKey, number> = this.parts.reduce((acc, p) => { (acc as any)[p.key] = 0; return acc; }, {} as Record<PartKey, number>);
-      for (const p of this.parts) {
+  for (const p of this.parts) {
         const n = cfg.assignments[p.key] ?? Math.floor(Math.random() * this.animals.length);
         m[p.key] = this.clampAnimalIndex(n);
       }
