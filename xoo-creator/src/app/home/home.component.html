@@ -17,8 +17,8 @@
   <h1 id="home-title">Bun venit la Imagination Zoo!</h1>
   <p class="tagline">Aici îți lași imaginația să înflorească. Amestecă părți de animale, creează hibrizi și descoperă povești magice. Alege cum vrei să te joci: creezi de dragul creației sau pornești în aventura de a-ți descoperi Animalul Interior.</p>
     <div class="hero-carousel" aria-roledescription="carousel" aria-label="Moduri de joc">
-      <div class="slides" [style.transform]="'translateX(-' + heroIndex() * 100 + '%)'">
-        <div class="slide" *ngFor="let s of heroSlides; let i = index" (click)="scrollToTarget(s.targetId)" role="button" tabindex="0" [attr.aria-label]="s.title">
+      <div class="slides stack">
+        <div class="slide" *ngFor="let s of heroSlides; let i = index" [class.visible]="heroIndex() === i" (click)="activateAndScroll(i, s.targetId)" role="button" tabindex="0" [attr.aria-label]="s.title">
           <div class="slide-card">
             <h3>{{ s.title }}</h3>
             <p>{{ s.text }}</p>
@@ -26,41 +26,48 @@
           </div>
         </div>
       </div>
-      <div class="dots" role="tablist" aria-label="Navigare carousel">
-        <button *ngFor="let s of heroSlides; let i = index" [class.active]="heroIndex() === i" (click)="goToHeroSlide(i)" role="tab" [attr.aria-selected]="heroIndex() === i" [attr.aria-label]="'Slide ' + (i + 1)"></button>
+      <div class="dots center" role="tablist" aria-label="Navigare carousel">
+  <button *ngFor="let s of heroSlides; let i = index"
+                class="dot-btn"
+                [class.active]="heroIndex() === i"
+    (click)="activateAndScroll(i, s.targetId)"
+                role="tab"
+                [attr.aria-selected]="heroIndex() === i"
+                [attr.aria-label]="'Slide ' + (i + 1)">
+          {{ i + 1 }}
+        </button>
       </div>
     </div>
   </header>
 
-  <h2 class="section-title">Creations</h2>
-
-  <!-- Hybrids Showcase Card -->
-  <section class="showcase" aria-label="Galerie hibrizi">
-    <div class="showcase-card">
-      <div class="frame">
-        <!-- Replay enter animation at each swap -->
-        @if (swap()) {
-          <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
-        } @else {
-          <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
-        }
-      </div>
-      <div class="legend">Have yours!</div>
-    </div>
-  </section> 
- 
-  <!-- Modul 1 — Create just for fun + Animal Keeper & Bestiar -->
-  <h2 class="section-title">Creează doar de fun 🎨</h2>
+  <!-- Modul 1 — Creează doar de distracție + Animal Keeper & Bestiar -->
+  <ng-container *ngIf="heroIndex() === 0">
+  <h2 class="section-title">Creează doar de distracție 🎨</h2>
   <p class="section-lead">Alege cap, corp și coadă, apasă „Generează” și vezi ce prieten apare! Fiecare hibrid primește un nume și o poveste scurtă.</p>
   <section id="mod1-section" class="features" aria-label="Modul 1">
     <div class="feature-card">
-      <h3>Create just for fun</h3>
+      <h3>Creează doar de distracție</h3>
       <p>Experimentează combinații amuzante, salvează ce îți place și revino oricând să continui.</p>
       <ul>
         <li>Combină părți și vezi instant rezultatul</li>
         <li>Salvează creațiile preferate</li>
         <li>Regenerează până ești mulțumit</li>
       </ul>
+      <!-- Hybrids Showcase moved inside Module 1 -->
+      <div class="showcase" aria-label="Galerie hibrizi">
+        <div class="showcase-card">
+          <div class="frame">
+            @if (swap()) {
+              <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
+            } @else {
+              <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
+            }
+          </div>
+          <div class="legend">
+            <a routerLink="/builder" class="cta small">Începe să creezi</a>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="feature-card">
       <h3>Animal Keeper &amp; Bestiar</h3>
@@ -73,11 +80,26 @@
       <span class="status soon">În curând: partajare cu părinții</span>
     </div>
   </section>
+  </ng-container>
 
-  <!-- Modul 2 — Descoperă Animalul din tine + Copacul Imaginației -->
-  <h2 class="section-title">Descoperă Animalul din tine 🪞</h2>
-  <section id="mod2-section" class="mode2" aria-label="Modul 2 — Descoperă Animalul din tine">
+  <!-- Modul 2 — Vrei să știi ce fel de animal ești? + placeholder carousel -->
+  <ng-container *ngIf="heroIndex() === 1">
+  <h2 class="section-title">Vrei să știi ce fel de animal ești? 🪞</h2>
+  <section id="mod2-section" class="mode2" aria-label="Modul 2 — Vrei să știi ce fel de animal ești?">
     <p class="lead">Pe măsură ce creezi hibrizi, alegerile tale spun o poveste despre cine ești: jucăuș ca iepurele, curios ca pisica sau visător ca girafa. Strânge indicii și deblochează Animalul tău Interior – avatarul tău magic.</p>
+    <!-- Placeholder: a doua galerie (poate cu alte imagini ulterior) -->
+    <div class="showcase" aria-label="Galerie animale placeholder">
+      <div class="showcase-card">
+        <div class="frame">
+          @if (swap()) {
+            <img [src]="currentImage()" alt="Animal preview" class="shot enter" />
+          } @else {
+            <img [src]="currentImage()" alt="Animal preview" class="shot enter" />
+          }
+        </div>
+        <div class="legend">Carousel de animale (placeholder)</div>
+      </div>
+    </div>
     <div class="how">
       <h3>Cum funcționează</h3>
       <ul>
@@ -86,16 +108,24 @@
         <li>Când strângi destule indicii → deblochezi Animalul Interior (card special + poveste personalizată)</li>
       </ul>
     </div>
-  <div id="tree-section" class="feature-card tree-card">
-      <h3>🌳 Copacul Imaginației</h3>
-      <p>Fiecare creatură salvată devine o frunză luminoasă în Copacul tău. Ramurile se umplu cu aventuri, iar în vârf te așteaptă Animalul Interior.</p>
-      <div class="tree-visual" aria-hidden="true">(imagine placeholder)</div>
-      <ul>
-        <li>Harta ta personală de povești</li>
-        <li>Frunze = creaturi, Ramuri = lumi (pajiște, savană, cer, apă)</li>
-        <li>Crește vizibil pe măsură ce creezi</li>
-      </ul>
-      <p class="hint small">În curând: evenimente pe ramuri și mini-misiuni („Revenim peste 2 ore cu o surpriză!”)</p>
-    </div>
   </section>
+  </ng-container>
+
+  <!-- Modul 3 — Copacul Imaginației -->
+  <ng-container *ngIf="heroIndex() === 2">
+    <h2 class="section-title">Copacul Imaginației</h2>
+    <section id="tree-section" class="mode2" aria-label="Modul 3 — Copacul Imaginației">
+      <div class="feature-card tree-card">
+        <h3>🌳 Copacul Imaginației</h3>
+        <p>Fiecare creatură salvată devine o frunză luminoasă în Copacul tău. Ramurile se umplu cu aventuri, iar în vârf te așteaptă Animalul Interior.</p>
+        <div class="tree-visual" aria-hidden="true">(imagine placeholder)</div>
+        <ul>
+          <li>Harta ta personală de povești</li>
+          <li>Frunze = creaturi, Ramuri = lumi (pajiște, savană, cer, apă)</li>
+          <li>Crește vizibil pe măsură ce creezi</li>
+        </ul>
+        <p class="hint small">În curând: evenimente pe ramuri și mini-misiuni („Revenim peste 2 ore cu o surpriză!”)</p>
+      </div>
+    </section>
+  </ng-container>
 </section>

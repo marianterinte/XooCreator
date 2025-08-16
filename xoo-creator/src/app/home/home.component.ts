@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -22,8 +23,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private intervalId: any;
   private readonly intervalMs = 2500; // 2.5s between images
-  private heroIntervalId: any;
-  private readonly heroIntervalMs = 4000; // 4s between hero slides
 
   // Rotation state
   idx = signal(0);
@@ -40,19 +39,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.swap.set(!this.swap());
     }, this.intervalMs);
 
-    // hero carousel autoplay
-    this.heroIntervalId = setInterval(() => {
-      const next = (this.heroIndex() + 1) % this.heroSlides.length;
-      this.heroIndex.set(next);
-    }, this.heroIntervalMs);
   }
 
   ngOnDestroy(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
-    }
-    if (this.heroIntervalId) {
-      clearInterval(this.heroIntervalId);
     }
   }
 
@@ -65,20 +56,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   heroSlides = [
     {
       key: 'mod1',
-      title: 'Create just for fun',
-      text: 'Combină părți, vezi instant rezultatul și salvează preferatele în Bestiar.',
+  title: 'Creează doar de distracție',
+  text: 'Combină părți, vezi instant rezultatul și salvează preferatele în Bestiarul tău.',
       targetId: 'mod1-section'
     },
     {
       key: 'mod2',
-      title: 'Descoperă Animalul din tine',
+  title: 'Vrei să știi ce fel de animal ești? :)',
       text: 'Strânge indicii din creațiile tale și deblochează Animalul Interior.',
       targetId: 'mod2-section'
     },
     {
       key: 'tree',
-      title: 'Imagination Tree',
-      text: 'Fiecare creatură salvată devine o frunză luminoasă în copacul tău.',
+  title: 'Copacul Imaginației',
+  text: 'Fiecare creatură salvată devine o frunză luminoasă în Copacul tău.',
       targetId: 'tree-section'
     }
   ];
@@ -93,5 +84,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   scrollToTarget(id: string) {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  activateAndScroll(i: number, id: string) {
+    this.goToHeroSlide(i);
+    // allow DOM to update visibility before scrolling
+    setTimeout(() => this.scrollToTarget(id), 50);
   }
 }

@@ -1,8 +1,8 @@
-/* Global reset for a mobile-like, no-scroll shell */
+/* Global reset */
 *{box-sizing:border-box}
-html,body{height:100%;}
-html,body{margin:0;padding:0;overflow:hidden;background:#fff;-webkit-tap-highlight-color:transparent}
-#app-root, app-root{display:block;height:100%;}
+html,body{min-height:100%;}
+html,body{margin:0;padding:0;background:#fff;-webkit-tap-highlight-color:transparent}
+#app-root, app-root{display:block;min-height:100%;}
 
 /* Prevent accidental image drag/selection */
 img{user-select:none;-webkit-user-drag:none}

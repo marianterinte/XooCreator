@@ -1,4 +1,4 @@
-.home{display:grid;gap:18px;place-items:stretch;height:100dvh;overflow:auto;-webkit-overflow-scrolling:touch}
+.home{display:grid;gap:18px;place-items:stretch}
 
 /* Top bar */
 .topbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(255,255,255,.8);backdrop-filter: blur(8px);border-bottom:1px solid #e5e7eb}
@@ -28,8 +28,10 @@
 
 /* Hero carousel */
 .hero-carousel{margin-top:8px;display:grid;gap:8px}
-.hero-carousel .slides{display:flex;transition:transform .5s cubic-bezier(.2,.7,.3,1);will-change:transform}
-.hero-carousel .slide{min-width:100%;padding-right:8px;box-sizing:border-box}
+.hero-carousel .slides{position:relative}
+.hero-carousel .slides.stack{min-height:120px}
+.hero-carousel .slide{position:absolute;inset:0;opacity:0;transform:scale(.985);transition:opacity .25s ease, transform .25s ease}
+.hero-carousel .slide.visible{opacity:1;transform:scale(1)}
 .hero-carousel .slide-card{border-radius:14px;padding:12px;background:
 	radial-gradient(ellipse at -10% 10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
 	radial-gradient(ellipse at 120% -10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
@@ -38,9 +40,11 @@
 .hero-carousel .slide-card h3{margin:0 0 4px 0}
 .hero-carousel .slide-card p{margin:0;color:#374151}
 .hero-carousel .slide-card .slide-link{display:inline-block;margin-top:6px;color:#111;font-weight:600}
-.hero-carousel .dots{display:flex;gap:8px;align-items:center}
-.hero-carousel .dots button{width:10px;height:10px;border-radius:999px;border:none;background:#d1d5db;cursor:pointer}
-.hero-carousel .dots button.active{background:#111}
+.hero-carousel .dots{display:flex;gap:14px;align-items:center}
+.hero-carousel .dots.center{justify-content:center}
+.hero-carousel .dots .dot-btn{width:36px;height:36px;border-radius:999px;border:none;background:#e5e7eb;cursor:pointer;display:grid;place-items:center;font-weight:700;color:#111}
+.hero-carousel .dots .dot-btn.active{background:#111;color:#fff;box-shadow:0 0 0 4px rgba(17,17,17,.08)}
+.hero-carousel .dots .dot-btn:active{transform:scale(.96)}
 
 /* Showcase card */
 .showcase{display:grid;padding:0 16px 16px}
