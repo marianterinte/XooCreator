@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { PersistenceService, BuilderConfig } from '../services/persistence.service';
+import { PersistenceService } from '../services/persistence.service';
 import { CreditsService } from '../services/credits.service';
 import { PartKey, PartDef, AnimalOption, BASE_PARTS } from './builder-types';
 import { PARTS, ANIMALS, BASE_UNLOCKED_ANIMAL_COUNT, BASE_LOCKED_PARTS } from './builder-data';
@@ -8,6 +8,7 @@ import { GenerateSelectionService } from './generate-selection.service';
 import { Router } from '@angular/router';
 import { GenerationFlowService } from './generation-flow.service';
 import { SwipeXDirective } from './swipe-x.directive';
+import { BuilderStateService } from './builder-state.service';
 
 
 @Component({
@@ -84,62 +85,20 @@ export class CreatureBuilderComponent {
     private readonly credits: CreditsService,
     private readonly genFlow: GenerationFlowService,
     private readonly genSel: GenerateSelectionService,
+    private readonly state: BuilderStateService,
   ) {
-    // Load config or randomize on first visit
-    const cfg = this.store.load();
-    if (cfg?.assignments) {
-      // Map unknown keys defensively
-      const m: Record<PartKey, number> = this.parts.reduce((acc, p) => { (acc as any)[p.key] = 0; return acc; }, {} as Record<PartKey, number>);
-  for (const p of this.parts) {
-        const n = cfg.assignments[p.key] ?? Math.floor(Math.random() * this.animals.length);
-        m[p.key] = this.clampAnimalIndex(n);
-      }
-      this.assignments.set(m);
-      if (cfg.activePartKey) {
-        const idx = this.parts.findIndex(p => p.key === cfg.activePartKey);
-        if (idx >= 0) this.activePartIdx.set(idx);
-      }
-      // Ensure current part uses a supported animal
-      this.syncActiveAnimalToCurrentPart(true);
-    } else {
-      // Randomize each part once using supported (prefer unlocked) animals
-      const m: Record<PartKey, number> = this.parts.reduce((acc, p) => { (acc as any)[p.key] = 0; return acc; }, {} as Record<PartKey, number>);
-      for (const p of this.parts) {
-        const supported = this.animals.filter(a => a.supports.has(p.key));
-  const unlockedCap = this.credits.hasEverToppedUp() ? this.animals.length : this.baseUnlockedAnimalCount;
-  const unlockedSupported = supported.filter(a => this.animals.indexOf(a) < unlockedCap);
-        const pool = unlockedSupported.length ? unlockedSupported : supported;
-        const pick = pool.length ? pool[Math.floor(Math.random() * pool.length)] : this.animals[0];
-        m[p.key] = this.animals.indexOf(pick);
-      }
-      this.assignments.set(m);
-      this.syncActiveAnimalToCurrentPart(true);
-      this.persist();
-    }
-
-    // Tutorial popup on first visit
-    try {
-      const seen = localStorage.getItem('xoo.tutorial.seen.v1');
-      if (!seen) this.showHelp.set(true);
-    } catch { /* ignore */ }
+    const init = this.state.loadOrInit(this.parts, this.animals, this.baseUnlockedAnimalCount);
+    this.assignments.set(init.assignments);
+    this.activePartIdx.set(init.activePartIdx);
+    // Ensure current part uses a supported animal
+    this.syncActiveAnimalToCurrentPart(true);
+    if (init.showTutorial) this.showHelp.set(true);
   }
 
   // Expose credits count for template
   get creditsLeft() { return this.credits.credits(); }
 
-  private persist() {
-    const cfg: BuilderConfig = {
-      assignments: { ...this.assignments() },
-      activePartKey: this.currentPart().key,
-      updatedAt: Date.now(),
-    };
-    this.store.save(cfg);
-  }
-
-  private randAnimalIndex(unlockedOnly = false) {
-    const max = unlockedOnly ? (this.credits.hasEverToppedUp() ? this.animals.length : this.baseUnlockedAnimalCount) : this.animals.length;
-    return Math.floor(Math.random() * Math.max(1, max));
-  }
+  // persistence handled via BuilderStateService
   private clampAnimalIndex(i: number) { const n = this.animals.length; return ((i % n) + n) % n; }
   private clampIndex(i: number, n: number) { return ((i % n) + n) % n; }
   private syncActiveAnimalToCurrentPart(updateAssignment = false) {
@@ -179,7 +138,7 @@ export class CreatureBuilderComponent {
     const i = (index + this.parts.length) % this.parts.length;
     this.activePartIdx.set(i);
     this.syncActiveAnimalToCurrentPart(true);
-    this.persist();
+  this.state.persist(this.assignments(), this.currentPart().key);
   }
   // index is position inside filtered list for current part
   selectAnimal(index: number) {
@@ -194,20 +153,20 @@ export class CreatureBuilderComponent {
     // Update assignment for current part
     const key = this.currentPart().key;
     this.assignments.update(m => ({ ...m, [key]: globalIdx }));
-    this.persist();
+  this.state.persist(this.assignments(), this.currentPart().key);
   }
 
   protected nextPart() {
     const next = (this.activePartIdx() + 1) % this.parts.length;
     this.activePartIdx.set(next);
     this.syncActiveAnimalToCurrentPart();
-    this.persist();
+  this.state.persist(this.assignments(), this.currentPart().key);
   }
   protected prevPart() {
     const prev = (this.activePartIdx() - 1 + this.parts.length) % this.parts.length;
     this.activePartIdx.set(prev);
     this.syncActiveAnimalToCurrentPart();
-    this.persist();
+  this.state.persist(this.assignments(), this.currentPart().key);
   }
   protected nextAnimal() {
     const filtered = this.animalsForCurrentPart();
@@ -223,7 +182,7 @@ export class CreatureBuilderComponent {
     this.activeAnimalIdx.set(globalIdx);
     const key = this.currentPart().key;
     this.assignments.update(m => ({ ...m, [key]: globalIdx }));
-    this.persist();
+  this.state.persist(this.assignments(), this.currentPart().key);
   }
   protected prevAnimal() {
     const filtered = this.animalsForCurrentPart();
@@ -239,7 +198,7 @@ export class CreatureBuilderComponent {
     this.activeAnimalIdx.set(globalIdx);
     const key = this.currentPart().key;
     this.assignments.update(m => ({ ...m, [key]: globalIdx }));
-    this.persist();
+  this.state.persist(this.assignments(), this.currentPart().key);
   }
 
   // Helpers for template
@@ -370,7 +329,7 @@ export class CreatureBuilderComponent {
   // Help modal
   openHelp(){ this.showHelp.set(true); }
   closeHelp(){
-    try { localStorage.setItem('xoo.tutorial.seen.v1', '1'); } catch { /* ignore */ }
+  this.state.markTutorialSeen();
     this.showHelp.set(false);
   }
 }
