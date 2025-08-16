@@ -1,0 +1,81 @@
+/* Shared modal styles copied from builder component for use inside modal components */
+.confirm-modal{
+  border:none;border-radius:28px;padding:24px;max-width:none;
+  width:90vw;height:90dvh;
+  box-shadow:0 20px 60px rgba(0,0,0,.28);
+  display:flex;flex-direction:column;overflow:hidden;
+  position:fixed;inset:0;margin:auto;
+  background:
+    radial-gradient(ellipse at 20% -10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
+    radial-gradient(ellipse at 120% 10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
+    linear-gradient(135deg, #fef3c7, #e9d5ff, #bfdbfe, #bbf7d0);
+  background-size: auto, auto, 300% 300%;
+  animation: modal-pop-in 220ms cubic-bezier(.2,.7,.3,1) both, gradientShift 10s ease-in-out infinite alternate;
+}
+.confirm-modal.result{width:100vw;height:100dvh;border-radius:0;padding:0;box-shadow:none}
+.confirm-modal.result h3{padding:calc(8px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) 0 calc(12px + env(safe-area-inset-left));margin:0}
+.confirm-modal.tutorial{height:54dvh}
+.confirm-modal.compact{height:54dvh}
+.confirm-modal:not([open]){display:none !important}
+.confirm-modal[open]{animation: modal-pop-in 220ms cubic-bezier(.2,.7,.3,1) both}
+.confirm-modal::backdrop{background:radial-gradient(circle at center, rgba(0,0,0,.45), rgba(0,0,0,.65));animation: backdrop-fade-in 220ms ease-out both}
+.confirm-modal h3{margin:0 0 12px 0;font-size:1.35rem}
+.confirm-modal .summary{flex:1 1 auto;min-height:0;overflow:auto;margin:12px 0;font-size:1.05rem;line-height:1.5}
+.confirm-modal ul{margin:0;padding-left:18px}
+.confirm-modal ol{margin:0;padding-left:18px}
+.confirm-modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.btn.primary{background:#4F46E5;color:white;border:none;border-radius:10px;padding:8px 12px}
+.confirm-modal.tutorial .btn.primary{color:#fff}
+.btn.secondary{background:#f3f4f6;color:#111;border:none;border-radius:10px;padding:8px 12px}
+.btn.unlock{background:#059669;color:#fff;border:none;border-radius:10px;padding:8px 12px}
+.btn.unlock:hover{background:#047857}
+.confirm-modal .warning{margin:8px 0 0 0;color:#b45309;background:#fff7ed;border:1px solid #fed7aa;padding:8px 10px;border-radius:10px}
+.confirm-modal .touch-checkbox{width:28px;height:28px}
+.confirm-modal li.disabled{opacity:.6;cursor:not-allowed}
+
+/* Result modal: progress */
+.confirm-modal.result .progress-wrap{display:grid;gap:12px;place-items:center;margin-top:8px}
+.confirm-modal.result .progress-bar{width:100%;height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+.confirm-modal.result .progress-bar .fill{height:100%;background:linear-gradient(90deg,#4F46E5,#06b6d4);width:0;transition:width .35s ease}
+.confirm-modal.result .status{margin:0;color:#374151}
+
+/* Result modal layout */
+.confirm-modal.result .close-x{position:absolute;right:calc(env(safe-area-inset-right) + 14px);top:calc(env(safe-area-inset-top) + 12px);z-index:3;background:#111;color:#fff;border:none;border-radius:12px;width:38px;height:38px;line-height:38px;text-align:center;font-size:1.3rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.confirm-modal.result .close-x:hover{background:#000}
+.confirm-modal.result .summary{margin-top:8px;padding:0 calc(12px + env(safe-area-inset-right)) 0 calc(12px + env(safe-area-inset-left))}
+.confirm-modal.result .result-body{flex:1 1 auto;min-height:0;display:grid;place-items:center;padding:8px calc(8px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left))}
+
+/* Flip card fills modal area on tablets */
+.confirm-modal.result .result-card{position:relative;width:100%;height:100%;max-width:unset;max-height:unset;margin:0;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.7,.3,1);cursor:pointer}
+.confirm-modal.result .result-card::before{content:"";position:absolute;inset:0;border-radius:20px;padding:2px;background:linear-gradient(135deg,#facc15,#fbbf24,#f59e0b);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;z-index:1;pointer-events:none}
+.confirm-modal.result .result-card.flipped{transform:rotateY(180deg)}
+.confirm-modal.result .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,.28);display:grid;place-items:center}
+.confirm-modal.result .card-face.front{background:#000}
+.confirm-modal.result .card-face.front img{width:100%;height:100%;object-fit:cover}
+.confirm-modal.result .card-face.front .flip-hint{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.6);color:#fff;padding:6px 10px;border-radius:10px}
+.confirm-modal.result .card-face.front .flip-hint.large{font-size:1.05rem;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.confirm-modal.result .card-face.back{transform:rotateY(180deg);background:#fff;display:flex}
+.confirm-modal.result .card-face.back .details{padding:16px;display:grid;gap:8px;align-content:start}
+.confirm-modal.result .card-face.back .res-thumb{width:208px;height:208px;object-fit:cover;border-radius:999px;border:3px solid #e5e7eb;justify-self:center}
+.confirm-modal.result .card-face.back .res-name{margin:0 0 8px 0;font-size:2rem;text-align:center;font-weight:800}
+.confirm-modal.result .card-face.back .res-story{margin:0;color:#374151;line-height:1.6;font-size:1.15rem;text-align:center}
+@media (min-width: 768px){
+  .confirm-modal.result .card-face.back .res-thumb{width:260px;height:260px;border-width:4px}
+  .confirm-modal.result .result-body{padding:12px}
+  .confirm-modal.result .card-face.back .res-name{font-size:2.4rem}
+  .confirm-modal.result .card-face.back .res-story{font-size:1.2rem}
+}
+.confirm-modal.result .card-face.back .res-story{margin:0;color:#374151;line-height:1.5}
+
+@keyframes modal-pop-in{
+  from{opacity:0;transform:translateY(8px) scale(.96)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes backdrop-fade-in{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes gradientShift{
+  from{background-position: left top, right top, 0% 0%}
+  to{background-position: left top, right top, 100% 100%}
+}

@@ -11,8 +11,8 @@
   <!-- B. Panou Sus — Body Parts: carousel (thumbnails) + big image -->
   <section class="panel panel-top" aria-labelledby="bp-section-title">
   <div class="carousel thumbs" role="listbox" aria-label="Body parts">
+      @for (p of parts; let i = $index; track $index) {
       <button
-        *ngFor="let p of parts; let i = index"
     class="thumb" [class.active]="i === activePartIdx()" [class.locked]="isPartLocked(p.key)"
     type="button" role="option" [attr.aria-selected]="i === activePartIdx()"
     (click)="selectPart(i)"
@@ -20,6 +20,7 @@
     <img [src]="p.image" [alt]="p.name" />
     <span *ngIf="isPartLocked(p.key)" class="badge-lock" aria-hidden="true">🔒</span>
       </button>
+      }
     </div>
 
     <figure class="preview" [class.locked]="isPartLocked(currentPart().key)"
@@ -46,8 +47,8 @@
     </figure>
 
   <div class="carousel thumbs" role="listbox" aria-label="Animals">
+      @for (a of animalsForCurrentPart(); let i = $index; track $index) {
       <button
-        *ngFor="let a of animalsForCurrentPart(); let i = index"
         class="thumb" [class.active]="isActiveAnimal(a)" [class.locked]="isAnimalLocked(getGlobalIndex(a))"
         type="button" role="option" [attr.aria-selected]="isActiveAnimal(a)"
         (click)="selectAnimal(i)"
@@ -55,6 +56,7 @@
         <img [src]="a.src" [alt]="a.label" />
         <span *ngIf="isAnimalLocked(getGlobalIndex(a))" class="badge-lock" aria-hidden="true">🔒</span>
       </button>
+      }
     </div>
   </section>
 
@@ -64,29 +66,21 @@
     <button *ngIf="isCurrentLocked()" type="button" class="btn-unlock" data-testid="btn-unlock" aria-label="Unlock" (click)="goToUnlock()">Unlock</button>
   </div>
 
-  <!-- Confirmation Modal -->
-  <dialog class="confirm-modal compact" [open]="showConfirm()" aria-labelledby="confirm-title" aria-modal="true">
-    <h3 id="confirm-title">Ai ales această configurație. Generăm?</h3>
-    <div class="summary">
-      <ul>
-        <li *ngFor="let p of parts" (click)="!isGenerateDisabled(p) && toggleGeneratePart(p.key)" [class.disabled]="isGenerateDisabled(p)" style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:6px;border-radius:10px">
-          <input type="checkbox" [checked]="generateSelection()[p.key]" [disabled]="isGenerateDisabled(p)" (click)="$event.preventDefault()" class="touch-checkbox" />
-          <strong style="min-width:80px">{{ p.name }}:</strong>
-          <img [src]="animals[assignments()[p.key]].src" [alt]="animals[assignments()[p.key]].label" style="width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #ddd" />
-          <span>{{ animals[assignments()[p.key]].label }}</span>
-          <span *ngIf="isPartLocked(p.key) || isAnimalLocked(assignments()[p.key])" style="color:#6b7280">(locked)</span>
-        </li>
-      </ul>
-      <p *ngIf="selectedCount() < 2" class="warning">Selectează cel puțin 2 părți pentru a genera.</p>
-    </div>
-    <p style="margin:8px 0 0 0;color:#111">Cost: {{ generateCost }} credit</p>
-    <p *ngIf="creditsLeft < generateCost" class="warning">Nu ai suficiente credite. Te rugăm folosește Unlock pentru a alimentezi contul.</p>
-    <div class="actions">
-      <button type="button" class="btn secondary" (click)="cancelGenerate()">Renunță</button>
-      <button type="button" class="btn unlock" (click)="goToUnlock()">Unlock</button>
-      <button *ngIf="creditsLeft >= generateCost && selectedCount() >= 2" type="button" class="btn primary" (click)="proceedGenerate()">Generează</button>
-    </div>
-  </dialog>
+  <!-- Confirmation Modal (standalone) -->
+  <confirm-generate-modal
+    [open]="showConfirm()"
+    [parts]="parts"
+    [animals]="animals"
+    [assignments]="assignments()"
+    [selection]="generateSelection()"
+    [disabledMap]="generateDisabledMap()"
+    [generateCost]="generateCost"
+    [creditsLeft]="creditsLeft"
+    (cancel)="cancelGenerate()"
+    (unlock)="goToUnlock()"
+    (proceed)="proceedGenerate()"
+    (toggle)="toggleGeneratePart($event)"
+  />
 
   <!-- Exit Confirmation Modal -->
   <dialog class="confirm-modal compact" [open]="showExitConfirm()" aria-labelledby="exit-title" aria-modal="true">
@@ -98,52 +92,20 @@
     </div>
   </dialog>
 
-  <!-- Help / Tutorial Modal -->
-  <dialog class="confirm-modal tutorial" [open]="showHelp()" aria-labelledby="help-title" aria-modal="true">
-    <h3 id="help-title">Cum funcționează</h3>
-    <div class="summary">
-      <ol>
-        <li>În caruselul de sus alegi partea corpului (cap, corp, brațe, picioare, coadă). Swipe stânga/dreapta sau apasă pe iconițe.</li>
-        <li>În imaginea de jos alegi animalul asociat acelei părți. Poți schimba cu swipe stânga/dreapta sau din caruselul de jos.</li>
-        <li>Apasă „Generate” pentru a confirma combinația selectată pentru toate părțile.</li>
-        <li>Unele părți/animale sunt „locked”. Când alegi o opțiune blocată, butonul devine „Unlock” și te duce la pagina unde poți cumpăra credite.</li>
-      </ol>
-    </div>
-    <div class="actions">
-      <button type="button" class="btn primary" (click)="closeHelp()">Înțeles</button>
-    </div>
-  </dialog>
+  <!-- Help / Tutorial Modal (standalone) -->
+  <help-modal [open]="showHelp()" (close)="closeHelp()" />
 
-  <!-- Result / Generation Modal -->
-  <dialog class="confirm-modal result" [open]="showResult()" aria-labelledby="result-title" aria-modal="true">
-    <h3 id="result-title">Rezultat</h3>
-    <!-- Top-right close button -->
-    <button type="button" class="close-x" aria-label="Închide" (click)="showResult.set(false)">×</button>
-    <div class="summary" *ngIf="genInProgress(); else doneTpl">
-      <div class="progress-wrap">
-        <div class="progress-bar"><div class="fill" [style.width]="genProgress() + '%'"></div></div>
-        <p class="status">{{ genMessage() }}</p>
-      </div>
-    </div>
-    <ng-template #doneTpl>
-      <div class="result-body">
-        <div class="result-card" [class.flipped]="resultFlipped()" (click)="flipResultCard()">
-          <!-- Front now shows the image first -->
-          <div class="card-face front">
-            <img [src]="resultImage()" [alt]="resultName()" />
-            <div class="flip-hint large">← atinge pentru flip</div>
-          </div>
-          <!-- Back reveals name and story -->
-          <div class="card-face back">
-            <div class="details">
-              <img class="res-thumb" [src]="resultImage()" [alt]="resultName()" />
-              <h4 class="res-name">{{ resultName() }}</h4>
-              <p class="res-story">{{ resultStory() }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ng-template>
-    <!-- actions removed for result modal; use top-right X -->
-  </dialog>
+  <!-- Result / Generation Modal (standalone) -->
+  <result-modal
+    [open]="showResult()"
+    [inProgress]="genInProgress()"
+    [progress]="genProgress()"
+    [message]="genMessage()"
+    [image]="resultImage()"
+    [name]="resultName()"
+    [story]="resultStory()"
+    [flipped]="resultFlipped()"
+    (close)="showResult.set(false)"
+    (flip)="flipResultCard()"
+  />
 </section>

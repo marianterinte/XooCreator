@@ -1,0 +1,27 @@
+<dialog class="confirm-modal result" [open]="open" aria-labelledby="result-title" aria-modal="true">
+  <h3 id="result-title">Rezultat</h3>
+  <button type="button" class="close-x" aria-label="Închide" (click)="close.emit()">×</button>
+  <div class="summary" *ngIf="inProgress; else doneTpl">
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="fill" [style.width]="progress + '%' "></div></div>
+      <p class="status">{{ message }}</p>
+    </div>
+  </div>
+  <ng-template #doneTpl>
+    <div class="result-body">
+      <div class="result-card" [class.flipped]="flipped" (click)="flip.emit()">
+        <div class="card-face front">
+          <img [src]="image" [alt]="name" />
+          <div class="flip-hint large">← atinge pentru flip</div>
+        </div>
+        <div class="card-face back">
+          <div class="details">
+            <img class="res-thumb" [src]="image" [alt]="name" />
+            <h4 class="res-name">{{ name }}</h4>
+            <p class="res-story">{{ story }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</dialog>

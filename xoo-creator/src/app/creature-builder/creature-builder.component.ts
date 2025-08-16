@@ -9,12 +9,15 @@ import { Router } from '@angular/router';
 import { GenerationFlowService } from './generation-flow.service';
 import { SwipeXDirective } from './swipe-x.directive';
 import { BuilderStateService } from './builder-state.service';
+import { ConfirmGenerateModalComponent } from './modals/confirm-generate.modal';
+import { HelpModalComponent } from './modals/help.modal';
+import { ResultModalComponent } from './modals/result.modal';
 
 
 @Component({
   selector: 'app-creature-builder',
   standalone: true,
-  imports: [NgFor, NgIf, SwipeXDirective],
+  imports: [NgFor, NgIf, SwipeXDirective, ConfirmGenerateModalComponent, HelpModalComponent, ResultModalComponent],
   templateUrl: './creature-builder.component.html',
   styleUrl: './creature-builder.component.css'
 })
@@ -78,6 +81,16 @@ export class CreatureBuilderComponent {
   protected partsForGenerate = computed(() =>
     this.parts.filter(p => !this.isPartLocked(p.key) && !this.isAnimalLocked(this.assignments()[p.key] ?? 0))
   );
+
+  // Map used by confirm modal to disable rows
+  protected generateDisabledMap = computed<Record<PartKey, boolean>>(() => {
+    const m = {} as Record<PartKey, boolean>;
+    for (const p of this.parts) {
+      const idx = this.assignments()[p.key] ?? 0;
+      (m as any)[p.key] = this.isPartLocked(p.key) || this.isAnimalLocked(idx);
+    }
+    return m;
+  });
 
   constructor(
     private readonly store: PersistenceService,

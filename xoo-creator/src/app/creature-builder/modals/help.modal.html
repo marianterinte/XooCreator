@@ -1,0 +1,14 @@
+<dialog class="confirm-modal tutorial" [open]="open" aria-labelledby="help-title" aria-modal="true">
+  <h3 id="help-title">Cum funcționează</h3>
+  <div class="summary">
+    <ol>
+      <li>În caruselul de sus alegi partea corpului (cap, corp, brațe, picioare, coadă). Swipe stânga/dreapta sau apasă pe iconițe.</li>
+      <li>În imaginea de jos alegi animalul asociat acelei părți. Poți schimba cu swipe stânga/dreapta sau din caruselul de jos.</li>
+      <li>Apasă „Generate” pentru a confirma combinația selectată pentru toate părțile.</li>
+      <li>Unele părți/animale sunt „locked”. Când alegi o opțiune blocată, butonul devine „Unlock” și te duce la pagina unde poți cumpăra credite.</li>
+    </ol>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn primary" (click)="close.emit()">Înțeles</button>
+  </div>
+</dialog>
