@@ -46,13 +46,11 @@
 .confirm-modal.result .result-body{flex:1 1 auto;min-height:0;display:grid;place-items:center;padding:8px calc(8px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left))}
 
 /* Flip card fills modal area on tablets */
-.confirm-modal.result .result-card{position:relative;width:100%;height:100%;max-width:unset;max-height:unset;margin:0;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.7,.3,1);cursor:pointer;isolation:isolate}
-.confirm-modal.result .result-card::before{content:"";position:absolute;inset:0;border-radius:20px;padding:2px;background:linear-gradient(135deg,#facc15,#fbbf24,#f59e0b);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;z-index:1;pointer-events:none;animation:goldShimmer 2.2s ease-in-out infinite}
-/* Soft golden aura that pulses gently outside the border */
-.confirm-modal.result .result-card::after{content:"";position:absolute;inset:-4px;border-radius:24px;background:radial-gradient(closest-side, rgba(250,204,21,.45), rgba(250,204,21,0) 72%);filter:blur(10px);opacity:.18;z-index:0;pointer-events:none;animation:goldAura 2.2s ease-in-out infinite}
+.confirm-modal.result .result-card{position:relative;width:100%;height:100%;max-width:unset;max-height:unset;margin:0;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.7,.3,1);cursor:pointer}
+.confirm-modal.result .result-card::before{content:"";position:absolute;inset:0;border-radius:20px;padding:2px;background:linear-gradient(135deg,#facc15,#fbbf24,#f59e0b);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;z-index:1;pointer-events:none}
 .confirm-modal.result .result-card.flipped{transform:rotateY(180deg)}
 .confirm-modal.result .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,.28);display:grid;place-items:center}
-.confirm-modal.result .card-face.front{background:#facc15}
+.confirm-modal.result .card-face.front{background:#000}
 .confirm-modal.result .card-face.front img{width:100%;height:100%;object-fit:cover}
 .confirm-modal.result .card-face.front .flip-hint{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.6);color:#fff;padding:6px 10px;border-radius:10px}
 .confirm-modal.result .card-face.front .flip-hint.large{font-size:1.05rem;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
@@ -68,15 +66,6 @@
   .confirm-modal.result .card-face.back .res-story{font-size:1.2rem}
 }
 .confirm-modal.result .card-face.back .res-story{margin:0;color:#374151;line-height:1.5}
-
-/* Gold border glow animations */
-@keyframes goldShimmer{0%,100%{filter:brightness(1) saturate(1)}50%{filter:brightness(1.35) saturate(1.15)}}
-@keyframes goldAura{0%,100%{opacity:.18;transform:scale(1)}50%{opacity:.38;transform:scale(1.02)}}
-
-@media (prefers-reduced-motion: reduce){
-  .confirm-modal.result .result-card::before,
-  .confirm-modal.result .result-card::after{animation: none}
-}
 
 @keyframes modal-pop-in{
   from{opacity:0;transform:translateY(8px) scale(.96)}
