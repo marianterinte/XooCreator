@@ -24,6 +24,7 @@
 @keyframes heroShift{from{background-position:0% 0%} to{background-position:100% 100%}}
 
 .section-title{margin:0 16px}
+.section-lead{margin:0 16px;color:#374151}
 
 /* Showcase card */
 .showcase{display:grid;padding:0 16px 16px}
@@ -55,6 +56,17 @@
 @media (min-width: 768px){
 	.features{grid-template-columns:repeat(2, minmax(0,1fr));gap:16px}
 }
+
+/* Mode 2 section */
+.mode2{display:grid;gap:12px;padding:8px 16px 24px}
+.mode2 .lead{margin:0;color:#374151}
+.mode2 .how h3{margin:0 0 6px 0}
+.mode2 .how ul{margin:0 0 6px 16px}
+.tree-card .tree-visual{height:160px;border-radius:12px;background:
+	radial-gradient(ellipse at -10% 10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
+	radial-gradient(ellipse at 120% -10%, rgba(255,255,255,.6), rgba(255,255,255,0) 60%),
+	linear-gradient(135deg,#86efac,#facc15,#60a5fa);background-size:auto,auto,200% 200%;animation: floatBg 12s ease-in-out infinite alternate;display:grid;place-items:center;color:#111;font-weight:700}
+.hint.small{font-size:.85rem;color:#6b7280;margin:6px 0 0 0}
 
 /* Coming Soon panels */
 .coming-panels{display:grid;gap:16px;padding:8px 16px 24px}
