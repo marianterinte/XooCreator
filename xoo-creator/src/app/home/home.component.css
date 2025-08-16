@@ -108,5 +108,5 @@
 @keyframes floatBg{from{background-position:0% 0%} to{background-position:100% 100%}}
 
 /* small CTA */
-.cta.small{display:inline-block;margin-top:6px;padding:8px 10px;border-radius:10px;background:#4F46E5;color:#fff;text-decoration:none}
+.cta.small{display:block;margin:8px auto 0;padding:8px 10px;border-radius:10px;background:#4F46E5;color:#fff;text-decoration:none;width:fit-content}
 .cta.small:hover{background:#4338CA}
