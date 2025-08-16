@@ -7,12 +7,13 @@ import { PARTS, ANIMALS, BASE_UNLOCKED_ANIMAL_COUNT, BASE_LOCKED_PARTS } from '.
 import { GenerateSelectionService } from './generate-selection.service';
 import { Router } from '@angular/router';
 import { GenerationFlowService } from './generation-flow.service';
+import { SwipeXDirective } from './swipe-x.directive';
 
 
 @Component({
   selector: 'app-creature-builder',
   standalone: true,
-  imports: [NgFor, NgIf],
+  imports: [NgFor, NgIf, SwipeXDirective],
   templateUrl: './creature-builder.component.html',
   styleUrl: './creature-builder.component.css'
 })
@@ -172,83 +173,7 @@ export class CreatureBuilderComponent {
     return index >= unlockedAnimalCount;
   }
 
-  // Pointer swipe handling (top=parts, bottom=animals)
-  private topStartX: number | null = null;
-  private bottomStartX: number | null = null;
-  protected topDragX = signal(0);
-  protected bottomDragX = signal(0);
-  protected topDragging = signal(false);
-  protected bottomDragging = signal(false);
-
-  onTopPointerDown(ev: PointerEvent) {
-  ev.stopPropagation();
-  this.topStartX = ev.clientX;
-    this.topDragging.set(true);
-    this.topDragX.set(0);
-    (ev.currentTarget as HTMLElement)?.setPointerCapture?.(ev.pointerId);
-  }
-  onTopPointerMove(ev: PointerEvent) {
-  ev.stopPropagation();
-  if (this.topStartX == null) return;
-    const dx = ev.clientX - this.topStartX;
-    this.topDragX.set(dx);
-  }
-  onTopPointerUp(ev: PointerEvent) {
-  ev.stopPropagation();
-  if (this.topStartX == null) return;
-    const dx = ev.clientX - this.topStartX;
-    this.topStartX = null;
-  const threshold = 60; // px
-    if (dx > threshold) {
-      this.prevPart();
-    } else if (dx < -threshold) {
-      this.nextPart();
-    }
-    this.topDragX.set(0);
-    this.topDragging.set(false);
-    (ev.currentTarget as HTMLElement)?.releasePointerCapture?.(ev.pointerId);
-  }
-  onTopPointerCancel(ev: PointerEvent) {
-  ev.stopPropagation();
-    this.topStartX = null;
-    this.topDragX.set(0);
-    this.topDragging.set(false);
-  }
-
-  onBottomPointerDown(ev: PointerEvent) {
-  ev.stopPropagation();
-  this.bottomStartX = ev.clientX;
-    this.bottomDragging.set(true);
-    this.bottomDragX.set(0);
-    (ev.currentTarget as HTMLElement)?.setPointerCapture?.(ev.pointerId);
-  }
-  onBottomPointerMove(ev: PointerEvent) {
-  ev.stopPropagation();
-  if (this.bottomStartX == null) return;
-    const dx = ev.clientX - this.bottomStartX;
-    this.bottomDragX.set(dx);
-  }
-  onBottomPointerUp(ev: PointerEvent) {
-  ev.stopPropagation();
-  if (this.bottomStartX == null) return;
-    const dx = ev.clientX - this.bottomStartX;
-    this.bottomStartX = null;
-    const threshold = 60;
-    if (dx > threshold) {
-      this.prevAnimal();
-    } else if (dx < -threshold) {
-      this.nextAnimal();
-    }
-    this.bottomDragX.set(0);
-    this.bottomDragging.set(false);
-    (ev.currentTarget as HTMLElement)?.releasePointerCapture?.(ev.pointerId);
-  }
-  onBottomPointerCancel(ev: PointerEvent) {
-  ev.stopPropagation();
-    this.bottomStartX = null;
-    this.bottomDragX.set(0);
-    this.bottomDragging.set(false);
-  }
+  // Swipe handling moved to SwipeXDirective
 
   selectPart(index: number) {
     const i = (index + this.parts.length) % this.parts.length;
@@ -272,19 +197,19 @@ export class CreatureBuilderComponent {
     this.persist();
   }
 
-  private nextPart() {
+  protected nextPart() {
     const next = (this.activePartIdx() + 1) % this.parts.length;
     this.activePartIdx.set(next);
     this.syncActiveAnimalToCurrentPart();
     this.persist();
   }
-  private prevPart() {
+  protected prevPart() {
     const prev = (this.activePartIdx() - 1 + this.parts.length) % this.parts.length;
     this.activePartIdx.set(prev);
     this.syncActiveAnimalToCurrentPart();
     this.persist();
   }
-  private nextAnimal() {
+  protected nextAnimal() {
     const filtered = this.animalsForCurrentPart();
     const n = filtered.length;
     if (n === 0) return;
@@ -300,7 +225,7 @@ export class CreatureBuilderComponent {
     this.assignments.update(m => ({ ...m, [key]: globalIdx }));
     this.persist();
   }
-  private prevAnimal() {
+  protected prevAnimal() {
     const filtered = this.animalsForCurrentPart();
     const n = filtered.length;
     if (n === 0) return;
