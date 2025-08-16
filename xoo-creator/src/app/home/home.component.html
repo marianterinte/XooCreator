@@ -16,7 +16,20 @@
   <header class="hero">
   <h1 id="home-title">Bun venit la Imagination Zoo!</h1>
   <p class="tagline">Aici îți lași imaginația să înflorească. Amestecă părți de animale, creează hibrizi și descoperă povești magice. Alege cum vrei să te joci: creezi de dragul creației sau pornești în aventura de a-ți descoperi Animalul Interior.</p>
-    <a routerLink="/builder" class="cta">Începe să creezi</a>
+    <div class="hero-carousel" aria-roledescription="carousel" aria-label="Moduri de joc">
+      <div class="slides" [style.transform]="'translateX(-' + heroIndex() * 100 + '%)'">
+        <div class="slide" *ngFor="let s of heroSlides; let i = index" (click)="scrollToTarget(s.targetId)" role="button" tabindex="0" [attr.aria-label]="s.title">
+          <div class="slide-card">
+            <h3>{{ s.title }}</h3>
+            <p>{{ s.text }}</p>
+            <span class="slide-link">vezi secțiunea ↓</span>
+          </div>
+        </div>
+      </div>
+      <div class="dots" role="tablist" aria-label="Navigare carousel">
+        <button *ngFor="let s of heroSlides; let i = index" [class.active]="heroIndex() === i" (click)="goToHeroSlide(i)" role="tab" [attr.aria-selected]="heroIndex() === i" [attr.aria-label]="'Slide ' + (i + 1)"></button>
+      </div>
+    </div>
   </header>
 
   <h2 class="section-title">Creations</h2>
@@ -39,7 +52,7 @@
   <!-- Modul 1 — Create just for fun + Animal Keeper & Bestiar -->
   <h2 class="section-title">Creează doar de fun 🎨</h2>
   <p class="section-lead">Alege cap, corp și coadă, apasă „Generează” și vezi ce prieten apare! Fiecare hibrid primește un nume și o poveste scurtă.</p>
-  <section class="features" aria-label="Modul 1">
+  <section id="mod1-section" class="features" aria-label="Modul 1">
     <div class="feature-card">
       <h3>Create just for fun</h3>
       <p>Experimentează combinații amuzante, salvează ce îți place și revino oricând să continui.</p>
@@ -63,7 +76,7 @@
 
   <!-- Modul 2 — Descoperă Animalul din tine + Copacul Imaginației -->
   <h2 class="section-title">Descoperă Animalul din tine 🪞</h2>
-  <section class="mode2" aria-label="Modul 2 — Descoperă Animalul din tine">
+  <section id="mod2-section" class="mode2" aria-label="Modul 2 — Descoperă Animalul din tine">
     <p class="lead">Pe măsură ce creezi hibrizi, alegerile tale spun o poveste despre cine ești: jucăuș ca iepurele, curios ca pisica sau visător ca girafa. Strânge indicii și deblochează Animalul tău Interior – avatarul tău magic.</p>
     <div class="how">
       <h3>Cum funcționează</h3>
@@ -73,7 +86,7 @@
         <li>Când strângi destule indicii → deblochezi Animalul Interior (card special + poveste personalizată)</li>
       </ul>
     </div>
-    <div class="feature-card tree-card">
+  <div id="tree-section" class="feature-card tree-card">
       <h3>🌳 Copacul Imaginației</h3>
       <p>Fiecare creatură salvată devine o frunză luminoasă în Copacul tău. Ramurile se umplu cu aventuri, iar în vârf te așteaptă Animalul Interior.</p>
       <div class="tree-visual" aria-hidden="true">(imagine placeholder)</div>

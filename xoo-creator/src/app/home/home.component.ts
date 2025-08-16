@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -23,6 +22,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private intervalId: any;
   private readonly intervalMs = 2500; // 2.5s between images
+  private heroIntervalId: any;
+  private readonly heroIntervalMs = 4000; // 4s between hero slides
 
   // Rotation state
   idx = signal(0);
@@ -38,16 +39,59 @@ export class HomeComponent implements OnInit, OnDestroy {
       // flip swap to retrigger animation via *ngIf
       this.swap.set(!this.swap());
     }, this.intervalMs);
+
+    // hero carousel autoplay
+    this.heroIntervalId = setInterval(() => {
+      const next = (this.heroIndex() + 1) % this.heroSlides.length;
+      this.heroIndex.set(next);
+    }, this.heroIntervalMs);
   }
 
   ngOnDestroy(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+    if (this.heroIntervalId) {
+      clearInterval(this.heroIntervalId);
+    }
   }
 
   onSignIn(): void {
     // Placeholder sign-in action; can be wired to a real auth flow later
     alert('Sign in coming soon');
+  }
+
+  // HERO carousel
+  heroSlides = [
+    {
+      key: 'mod1',
+      title: 'Create just for fun',
+      text: 'Combină părți, vezi instant rezultatul și salvează preferatele în Bestiar.',
+      targetId: 'mod1-section'
+    },
+    {
+      key: 'mod2',
+      title: 'Descoperă Animalul din tine',
+      text: 'Strânge indicii din creațiile tale și deblochează Animalul Interior.',
+      targetId: 'mod2-section'
+    },
+    {
+      key: 'tree',
+      title: 'Imagination Tree',
+      text: 'Fiecare creatură salvată devine o frunză luminoasă în copacul tău.',
+      targetId: 'tree-section'
+    }
+  ];
+  heroIndex = signal(0);
+
+  goToHeroSlide(i: number) {
+    const n = this.heroSlides.length;
+    const idx = ((i % n) + n) % n;
+    this.heroIndex.set(idx);
+  }
+
+  scrollToTarget(id: string) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
