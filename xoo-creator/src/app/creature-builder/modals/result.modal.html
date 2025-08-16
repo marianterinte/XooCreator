@@ -1,13 +1,21 @@
 <dialog class="confirm-modal result" [open]="open" aria-labelledby="result-title" aria-modal="true">
   <h3 id="result-title">Rezultat</h3>
   <button type="button" class="close-x" aria-label="Închide" (click)="close.emit()">×</button>
-  <div class="summary" *ngIf="inProgress; else doneTpl">
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="fill" [style.width]="progress + '%' "></div></div>
-      <p class="status">{{ message }}</p>
+  @if (inProgress) {
+    <div class="summary">
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="fill" [style.width]="progress + '%' "></div></div>
+        <p class="status">{{ message }}</p>
+      </div>
+      <!-- Flipping reveal card while generating (same size as final card) -->
+      <div class="progress-body">
+        <div class="progress-card" [style.--flip-ms]="(progress > 95 ? 300 : (1200 - (progress * 8))) + 'ms'">
+          <div class="card-face front"><div class="mystery">?</div></div>
+          <div class="card-face back"><div class="mystery">?</div></div>
+        </div>
+      </div>
     </div>
-  </div>
-  <ng-template #doneTpl>
+  } @else {
     <div class="result-body">
       <div class="result-card" [class.flipped]="flipped" (click)="flip.emit()">
         <div class="card-face front">
@@ -23,5 +31,5 @@
         </div>
       </div>
     </div>
-  </ng-template>
+  }
 </dialog>
