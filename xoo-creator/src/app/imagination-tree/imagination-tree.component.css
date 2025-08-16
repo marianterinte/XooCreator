@@ -1,0 +1,10 @@
+.tree-page{display:grid;gap:16px;padding:16px}
+.tree-page header h1{margin:0}
+.tree-page header p{margin:0;color:#374151}
+.tree-hero{border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.tree-hero img{display:block;width:100%;height:auto}
+.steps h2{margin:0 0 6px 0}
+.steps ol{margin:0 0 6px 18px}
+.cta-row{display:flex;justify-content:center}
+.cta{display:inline-block;padding:12px 16px;border-radius:12px;background:#4F46E5;color:#fff;text-decoration:none;box-shadow:0 8px 18px rgba(79,70,229,.25)}
+.cta:hover{background:#4338CA}

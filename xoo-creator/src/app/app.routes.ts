@@ -6,6 +6,7 @@ import { JournalComponent } from './journal/journal.component';
 import { MapComponent } from './map/map.component';
 import { ProgressComponent } from './progress/progress.component';
 import { BestiaryComponent } from './bestiary/bestiary.component';
+import { ImaginationTreeComponent } from './imagination-tree/imagination-tree.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Imagination Zoo — Acasă' },
@@ -15,5 +16,6 @@ export const routes: Routes = [
   { path: 'map', component: MapComponent, title: 'Imagination Zoo — Harta Lumii' },
   { path: 'progress', component: ProgressComponent, title: 'Imagination Zoo — Progres' },
   { path: 'bestiary', component: BestiaryComponent, title: 'Imagination Zoo — Bestiar' },
+  { path: 'imagination-tree', component: ImaginationTreeComponent, title: 'Imagination Zoo — Copacul Imaginației' },
   { path: '**', redirectTo: '' },
 ];
