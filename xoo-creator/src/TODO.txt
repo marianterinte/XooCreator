@@ -1,6 +1,6 @@
-1. Test MaUI + study with mentai sa vedem daca merge in webview si daca da atunci
+### DONE 1. Test MaUI + study with mentai sa vedem daca merge in webview si daca da atunci
 putem sa schimbam catre imagination zoo.
 2. Deploy first version.
 3. implement login.
-4. Use Reflex sau better create minimal api backend.
+4. Better create minimal api backend.
 
