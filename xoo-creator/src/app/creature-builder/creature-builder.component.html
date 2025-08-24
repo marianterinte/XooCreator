@@ -5,12 +5,13 @@
     <div class="spacer"></div>
     <div class="credits">{{ creditsLeft }} credits</div>
     <div class="spacer"></div>
+    <!-- Standalone Help button only on builder -->
+    <button class="btn-icon help" type="button" aria-label="Ajutor" (click)="openHelp()">❓</button>
     <user-menu
       [userName]="'Guest'"
-      (help)="openHelp()"
       (profile)="goToProfile()"
       (settings)="goToSettings()"
-  (imaginationTree)="goToImaginationTree()"
+      (imaginationTree)="goToImaginationTree()"
       (logout)="logout()"
     />
   </header>
