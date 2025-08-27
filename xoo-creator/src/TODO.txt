@@ -3,4 +3,3 @@ putem sa schimbam catre imagination zoo.
 2. Deploy first version.
 3. implement login.
 4. Better create minimal api backend.
-
