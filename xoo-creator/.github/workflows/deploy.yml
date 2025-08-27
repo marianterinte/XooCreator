@@ -32,23 +32,37 @@ jobs:
 
       - name: Build Angular app
         run: |
-          npm run build -- --base-href "/${{ github.event.repository.name }}/"
+          npm run build -- --base-href "/${{ github.event.repository.name }}/" --deploy-url "/${{ github.event.repository.name }}/"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Locate dist folder
+        id: dist
+        shell: bash
+        run: |
+          set -e
+          FIRST_INDEX=$(find dist -type f -name index.html | head -n 1)
+          if [ -z "$FIRST_INDEX" ]; then
+            echo "No index.html found under dist" >&2
+            exit 1
+          fi
+          DIST_DIR=$(dirname "$FIRST_INDEX")
+          echo "DIST_DIR=$DIST_DIR" >> $GITHUB_OUTPUT
+          echo "Using DIST_DIR=$DIST_DIR"
+
       - name: Add SPA fallback (404.html)
         run: |
-          for d in dist/*/browser; do
-            if [ -f "$d/index.html" ]; then
-              cp "$d/index.html" "$d/404.html"
-            fi
-          done
+          cp "${{ steps.dist.outputs.DIST_DIR }}"/index.html "${{ steps.dist.outputs.DIST_DIR }}"/404.html
 
-      - name: Upload artifact
+      - name: Disable Jekyll processing
+        run: |
+          touch "${{ steps.dist.outputs.DIST_DIR }}"/.nojekyll
+
+    - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/**/browser
+      path: ${{ steps.dist.outputs.DIST_DIR }}
 
   deploy:
     environment:
