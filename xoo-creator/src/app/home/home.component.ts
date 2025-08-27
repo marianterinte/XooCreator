@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }, this.intervalMs);
 
   }
- 
+  
   ngOnDestroy(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
