@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main", "DEV"]
+    branches: ["main", "DEV", "square-mages"]
   workflow_dispatch:
 
 permissions:
