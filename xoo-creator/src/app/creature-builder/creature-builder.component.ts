@@ -317,7 +317,7 @@ export class CreatureBuilderComponent {
     this.genProgress.set(100);
     this.genInProgress.set(false);
     // For now, use a placeholder hybrid image
-    this.resultImage.set('/images/animals/hybrids/hybrid_duckfox.jpg');
+  this.resultImage.set('images/animals/hybrids/hybrid_duckfox.jpg');
   // Show image first; name and story appear on flip
   this.resultName.set('Matzo-Iepurele');
   this.resultStory.set('Născut dintr-o ploaie magică peste un câmp de lalele, Matzo-Iepurele a învățat să repare jucăriile stricându-le mai întâi „din greșeală”. Copiii vin la el să le repare bicicletele și să asculte povești amestecate cu glume. E cunoscut drept aducătorul de zâmbete.');
