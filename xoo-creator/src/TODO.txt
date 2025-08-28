@@ -27,5 +27,10 @@ aceastea trebuie sa emane un tip de caracter asociat cu un animit animal. (ce-l 
 Tot asa pana la etajul 3.
 Apoi daca mai alimentaza credite poate juca si alte etaje. 
 
-As vrea sa imi faci business ul pentru asa ceva. 
+As vrea sa gandim arhitectura unei aplicatii angular pentru asa ceva, ce backend mi-ai propune care sa fie usor de gestionat.
+(.net, node?, eu de exemplu stiu C#, dar sunt deschis si la altele). as vrea sa facem usor un server care sa consume
+un postgress db si sa stocam toate detaliile necesare de backend. ( pozele vor ramane pe frotend nu? sau ba?) 
+Apoi vreau sa integram cu auth0 usor si sa poata fi deplyed usor in github la fel cum e si angular momentan.
+
+Te rog sa iti dai cu parerea intai.
  

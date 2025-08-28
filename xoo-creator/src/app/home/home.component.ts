@@ -66,12 +66,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       text: 'Strânge indicii din creațiile tale și deblochează Animalul Interior.',
       targetId: 'mod2-section'
     },
-    {
-      key: 'tree',
-  title: 'Copacul Imaginației',
-  text: 'Fiecare creatură salvată devine o frunză luminoasă în Copacul tău.',
-      targetId: 'tree-section'
-    }
+  //   {
+  //     key: 'tree',
+  // title: 'Copacul Imaginației',
+  // text: 'Fiecare creatură salvată devine o frunză luminoasă în Copacul tău.',
+  //     targetId: 'tree-section'
+  //   }
   ];
   heroIndex = signal(0);
 
