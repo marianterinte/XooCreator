@@ -12,13 +12,13 @@ import { RouterLink } from '@angular/router';
 export class HomeComponent implements OnInit, OnDestroy {
   // Hybrid images list from public/images/animals/hybrids
   readonly hybrids = [
-  'images/animals/hybrids/hybrid-elephant-fox.jpg',
-  'images/animals/hybrids/hybrid-giraffe_cat.jpg',
-  'images/animals/hybrids/hybrid-rabbit-girafe.jpg',
-  'images/animals/hybrids/hybrid_bunny_cat.jpg',
-  'images/animals/hybrids/hybrid_cat-bunny.jpg',
-  'images/animals/hybrids/hybrid_duckfox.jpg',
-  'images/animals/hybrids/hybrid_giraffe-cat.jpg'
+    { src: 'images/animals/hybrids/hybrid-elephant-fox.jpg', name: 'EleVulpoiul' },
+    { src: 'images/animals/hybrids/hybrid-giraffe_cat.jpg', name: 'GiraPisica' },
+    { src: 'images/animals/hybrids/hybrid-rabbit-girafe.jpg', name: 'IepuGiraful' },
+    { src: 'images/animals/hybrids/hybrid_bunny_cat.jpg', name: 'IepuMiau' },
+    { src: 'images/animals/hybrids/hybrid_cat-bunny.jpg', name: 'Matzo-Iepurele' },
+    { src: 'images/animals/hybrids/hybrid_duckfox.jpg', name: 'RațVulpoiul' },
+    { src: 'images/animals/hybrids/hybrid_giraffe-cat.jpg', name: 'GiraMiau' }
   ];
 
   private intervalId: any;

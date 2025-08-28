@@ -14,7 +14,8 @@
 
   <!-- Colorful banner / hero -->
   <header class="hero">
-  <h1 id="home-title">Bun venit la Imagination Zoo!</h1>
+  <h1 id="home-title">Imagination Zoo</h1>
+  <h2 class="subtitle">Bun venit!</h2>
   <p class="tagline">Aici îți lași imaginația să înflorească. Amestecă părți de animale, creează hibrizi și descoperă povești magice. Alege cum vrei să te joci: creezi de dragul creației sau pornești în aventura de a-ți descoperi Animalul Interior.</p>
     <div class="hero-carousel" aria-roledescription="carousel" aria-label="Moduri de joc">
       <div class="slides stack">
@@ -58,10 +59,10 @@
         <div class="showcase-card">
           <div class="frame">
             @if (swap()) {
-              <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
-            } @else {
-              <img [src]="currentImage()" alt="Hybrid preview" class="shot enter" />
-            }
+                <img [src]="currentImage().src" [alt]="currentImage().name || 'Hybrid preview'" class="shot enter" />
+              } @else {
+                <img [src]="currentImage().src" [alt]="currentImage().name || 'Hybrid preview'" class="shot enter" />
+              }
           </div>
           <div class="legend">
             <a routerLink="/builder" class="cta small">Începe să creezi</a>
@@ -92,12 +93,12 @@
       <div class="showcase-card">
         <div class="frame">
           @if (swap()) {
-            <img [src]="currentImage()" alt="Animal preview" class="shot enter" />
+            <img [src]="currentImage().src" [alt]="currentImage().name || 'Animal preview'" class="shot enter" />
           } @else {
-            <img [src]="currentImage()" alt="Animal preview" class="shot enter" />
+            <img [src]="currentImage().src" [alt]="currentImage().name || 'Animal preview'" class="shot enter" />
           }
         </div>
-        <div class="legend">Carousel de animale (placeholder)</div>
+        <div class="legend">{{ currentImage().name }}</div>
       </div>
     </div>
     <div class="how">
