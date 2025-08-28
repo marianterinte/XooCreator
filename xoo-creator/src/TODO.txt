@@ -5,3 +5,8 @@ putem sa schimbam catre imagination zoo.
 4. Better create minimal api backend.
 
 
+IDEAS:
+
+imagination tree could hit poi
+ or could simply have a story that you 
+ can choose and depending on what you choose you get an animal then you go directly to generate animal and see what you become.
