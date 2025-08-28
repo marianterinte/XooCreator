@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Angular App to GitHub Pages
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -24,45 +24,48 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '22'
           cache: npm
+          cache-dependency-path: xoo-creator/package-lock.json
 
       - name: Install dependencies
+        working-directory: xoo-creator
         run: npm ci
 
       - name: Build Angular app
-        run: |
-          npm run build -- --base-href "./"
+        working-directory: xoo-creator
+        run: npm run build -- --base-href="/XooCreator/"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Locate dist folder
-        id: dist
-        shell: bash
+      - name: Locate and prepare dist folder
+        working-directory: xoo-creator
         run: |
-          set -e
-          FIRST_INDEX=$(find dist -type f -name index.html | head -n 1)
-          if [ -z "$FIRST_INDEX" ]; then
-            echo "No index.html found under dist" >&2
+          # Find the actual output directory
+          if [ -d "dist/xoo-creator/browser" ]; then
+            DIST_DIR="dist/xoo-creator/browser"
+          elif [ -d "dist/xoo-creator" ]; then
+            DIST_DIR="dist/xoo-creator"
+          else
+            echo "Could not find dist directory"
+            find dist -type d -name "*" || true
             exit 1
           fi
-          DIST_DIR=$(dirname "$FIRST_INDEX")
-          echo "DIST_DIR=$DIST_DIR" >> $GITHUB_OUTPUT
-          echo "Using DIST_DIR=$DIST_DIR"
+          echo "Using dist directory: $DIST_DIR"
+          
+          # Add SPA fallback
+          cp "$DIST_DIR/index.html" "$DIST_DIR/404.html"
+          
+          # Disable Jekyll processing
+          touch "$DIST_DIR/.nojekyll"
+          
+          echo "DIST_DIR=xoo-creator/$DIST_DIR" >> $GITHUB_ENV
 
-      - name: Add SPA fallback (404.html)
-        run: |
-          cp "${{ steps.dist.outputs.DIST_DIR }}"/index.html "${{ steps.dist.outputs.DIST_DIR }}"/404.html
-
-      - name: Disable Jekyll processing
-        run: |
-          touch "${{ steps.dist.outputs.DIST_DIR }}"/.nojekyll
-
-    - name: Upload artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-      path: ${{ steps.dist.outputs.DIST_DIR }}
+          path: ${{ env.DIST_DIR }}
 
   deploy:
     environment:
