@@ -10,3 +10,22 @@ IDEAS:
 imagination tree could hit poi
  or could simply have a story that you 
  can choose and depending on what you choose you get an animal then you go directly to generate animal and see what you become.
+
+
+
+BUSINESS Logic idea:
+Pentru a juca copacul imaginatiei trebuie sa ai minim 15 credite cumparate.
+Sa zicem ca userul ajunge la nivelul 3 cu aceste 15 credite
+1. Userul vede copacul imaginatiei care are mereu o radacina.
+va trebui sa iti alegi un tip de radacina (culoare sau tip de copac).
+in functie de asta primesti un tip de animal de baza. 
+
+2.Dupa radacina incepe sa avanseze prin a isi alege o locatie pentru acel copac ( locatia poate fi junga, sahara, etc.)
+In functie de ce locatie ii da prezentam un copac cu crengi si vom alege animale din acea zona. 
+3. Etajul 1 al copacului, si crengile de baza sa zicem ( are 3 optiuni: o creanga subtire dar lunga, una groasa si scurta, una potrivita) 
+aceastea trebuie sa emane un tip de caracter asociat cu un animit animal. (ce-l de al doilea pentru generearea hybridului).
+Tot asa pana la etajul 3.
+Apoi daca mai alimentaza credite poate juca si alte etaje. 
+
+As vrea sa imi faci business ul pentru asa ceva. 
+ 
